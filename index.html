@@ -22,18 +22,16 @@
                     </ul>
                 </li>
             </ul>
-            <form ng-submit="addQuestion()">
+            <form ng-controller="QuestionEditorControl" ng-submit="addQuestion()">
                 <input type="text" ng-model="questionText" size="30" placeholder="Type a question here">
                 <ul>
-                    <li>
-                        <input type="text" ng-model="questionChoice" size="25" placeholder="Type a choice here">
+                    <li ng-repeat="choice in choices">
+                        {{choice}}
                     </li>
-                    <li>
-                        <input type="text" ng-model="questionChoice" size="25" placeholder="Type another choice here">
-                    </li>
-                    <input type="button" ng-click="" value="Add Another Choice">
+                    <input type="text" ng-model="choiceText" size="25" placeholder="Type a choice here">
+                    <input type="button" ng-click="addChoice()" value="Add this choice">
                 </ul>
-                <input type="button" value="Add this question">
+                <input type="submit" value="Add this question">
             </form>
         </div>
     </body>
