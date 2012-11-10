@@ -11,12 +11,12 @@
     </head>
     <body>
         <h2 id="title">Quickly Quiz!</h2>
-        <div class="container-fluid">
+        <div class="container-fluid" ng-controller="QuestionControl">
             <div class="row-fluid">
                 <div class="span3 hide-on-print">
                     <!-- editor sidebar-->
                     <div class="well">
-                        <form ng-controller="QuestionEditorControl" ng-submit="addQuestion()">
+                        <form ng-submit="addQuestion()" ng-controller="QuestionEditorControl">
                             <fieldset>
                                 <legend>Add a Question</legend>
                                 <input type="text" ng-model="questionText" placeholder="Type a question here">
@@ -25,17 +25,17 @@
                                         {{choice}}
                                     </li>
                                     <input type="text" ng-model="choiceText" placeholder="Type a choice here">
-                                    <button type="button" ng-click="addChoice()" class="btn"><i class="icon-plus"></i> Add this choice</button>
+                                    <button type="button" ng-click="addChoice();" class="btn"><i class="icon-plus"></i> Add this choice</button>
                                 </ul>
                                 <button type="submit" class="btn">Add this question</button>
                             </fieldset>
                         </form>
                     </div>
-                    <button type="button" class="btn btn-large btn-primary">Shuffle the answers</button>
+                    <button type="button" ng-controller="QuestionControl" ng-click="shuffleChoices()" class="btn btn-large btn-primary">Shuffle the answers</button>
                 </div>
                 <div id="quiz" class="span9">
                     <!-- Quiz content-->
-                    <div ng-controller="QuestionControl">
+                    <div>
                         <div>
                             This quiz contains {{questions.length;}} questions. Good Luck!
                         </div>
