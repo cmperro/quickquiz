@@ -4,29 +4,35 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <title>Quickly Quiz</title>
         <link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="css/printfriendly.css" type="text/css" media="print" charset="utf-8">
         <script src="scripts/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="scripts/angular.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="scripts/quiz.js" type="text/javascript" charset="utf-8"></script>
     </head>
     <body>
-        <h2>Quickly Quiz!</h2>
+        <h2 id="title">Quickly Quiz!</h2>
         <div class="container-fluid">
             <div class="row-fluid">
-                <div class="span3">
+                <div class="span3 hide-on-print">
                     <!-- editor sidebar-->
-                    <form ng-controller="QuestionEditorControl" ng-submit="addQuestion()">
-                        <input type="text" ng-model="questionText" size="30" placeholder="Type a question here">
-                        <ul>
-                            <li ng-repeat="choice in choices">
-                                {{choice}}
-                            </li>
-                            <input type="text" ng-model="choiceText" size="25" placeholder="Type a choice here">
-                            <input type="button" ng-click="addChoice()" value="Add this choice">
-                        </ul>
-                        <input type="submit" value="Add this question">
-                    </form>
+                    <div class="well">
+                        <form ng-controller="QuestionEditorControl" ng-submit="addQuestion()">
+                            <fieldset>
+                                <legend>Add a Question</legend>
+                                <input type="text" ng-model="questionText" placeholder="Type a question here">
+                                <ul>
+                                    <li ng-repeat="choice in choices">
+                                        {{choice}}
+                                    </li>
+                                    <input type="text" ng-model="choiceText" placeholder="Type a choice here">
+                                    <input type="button" ng-click="addChoice()" value="Add this choice" class="btn">
+                                </ul>
+                                <button type="submit" class="btn">Add this question</button>
+                            </fieldset>
+                        </form>
+                    </div>
                 </div>
-                <div class="span9">
+                <div id="quiz" class="span9">
                     <!-- Quiz content-->
                     <div ng-controller="QuestionControl">
                         <div>
