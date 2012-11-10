@@ -1,0 +1,40 @@
+<!DOCTYPE HTML>
+<html ng-app>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=utf-8">
+        <title>Quickly Quiz</title>
+        <script src="scripts/angular.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="scripts/quiz.js" type="text/javascript" charset="utf-8"></script>
+    </head>
+    <body>
+        <h2>Quiz</h2>
+        <div ng-controller="QuestionControl">
+            <div>
+                This quiz contains {{questions.length;}} questions. Good Luck!
+            </div>
+            <ul>
+                <li ng-repeat="question in questions">
+                    <span>{{question.text}}</span>
+                    <ul>
+                        <li ng-repeat="choice in question.choices">
+                            {{choice}}
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <form ng-submit="addQuestion()">
+                <input type="text" ng-model="questionText" size="30" placeholder="Type a question here">
+                <ul>
+                    <li>
+                        <input type="text" ng-model="questionChoice" size="25" placeholder="Type a choice here">
+                    </li>
+                    <li>
+                        <input type="text" ng-model="questionChoice" size="25" placeholder="Type another choice here">
+                    </li>
+                    <input type="button" ng-click="" value="Add Another Choice">
+                </ul>
+                <input type="button" value="Add this question">
+            </form>
+        </div>
+    </body>
+</html>
