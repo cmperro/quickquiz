@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html ng-app>
+<html lang="en" ng-app>
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <title>Quickly Quiz</title>
@@ -9,32 +9,42 @@
         <script src="scripts/quiz.js" type="text/javascript" charset="utf-8"></script>
     </head>
     <body>
-        <h2>Quiz</h2>
-        <div ng-controller="QuestionControl">
-            <div>
-                This quiz contains {{questions.length;}} questions. Good Luck!
+        <h2>Quickly Quiz!</h2>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <div class="span3">
+                    <!-- editor sidebar-->
+                    <form ng-controller="QuestionEditorControl" ng-submit="addQuestion()">
+                        <input type="text" ng-model="questionText" size="30" placeholder="Type a question here">
+                        <ul>
+                            <li ng-repeat="choice in choices">
+                                {{choice}}
+                            </li>
+                            <input type="text" ng-model="choiceText" size="25" placeholder="Type a choice here">
+                            <input type="button" ng-click="addChoice()" value="Add this choice">
+                        </ul>
+                        <input type="submit" value="Add this question">
+                    </form>
+                </div>
+                <div class="span9">
+                    <!-- Quiz content-->
+                    <div ng-controller="QuestionControl">
+                        <div>
+                            This quiz contains {{questions.length;}} questions. Good Luck!
+                        </div>
+                        <ul>
+                            <li ng-repeat="question in questions">
+                                <span>{{question.text}}</span>
+                                <ul>
+                                    <li ng-repeat="choice in question.choices">
+                                        {{choice}}
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
-            <ul>
-                <li ng-repeat="question in questions">
-                    <span>{{question.text}}</span>
-                    <ul>
-                        <li ng-repeat="choice in question.choices">
-                            {{choice}}
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-            <form ng-controller="QuestionEditorControl" ng-submit="addQuestion()">
-                <input type="text" ng-model="questionText" size="30" placeholder="Type a question here">
-                <ul>
-                    <li ng-repeat="choice in choices">
-                        {{choice}}
-                    </li>
-                    <input type="text" ng-model="choiceText" size="25" placeholder="Type a choice here">
-                    <input type="button" ng-click="addChoice()" value="Add this choice">
-                </ul>
-                <input type="submit" value="Add this question">
-            </form>
         </div>
     </body>
 </html>
