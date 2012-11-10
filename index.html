@@ -25,12 +25,13 @@
                                         {{choice}}
                                     </li>
                                     <input type="text" ng-model="choiceText" placeholder="Type a choice here">
-                                    <input type="button" ng-click="addChoice()" value="Add this choice" class="btn">
+                                    <button type="button" ng-click="addChoice()" class="btn"><i class="icon-plus"></i> Add this choice</button>
                                 </ul>
                                 <button type="submit" class="btn">Add this question</button>
                             </fieldset>
                         </form>
                     </div>
+                    <button type="button" class="btn btn-large btn-primary">Shuffle the answers</button>
                 </div>
                 <div id="quiz" class="span9">
                     <!-- Quiz content-->
