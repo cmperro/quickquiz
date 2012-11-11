@@ -32,6 +32,10 @@ function QuestionEditorControl($scope) {
         $scope.choiceText = '';
     };
 
+    $scope.removeChoice = function (index) {
+        $scope.choices.splice(index, 1);
+    };
+
     $scope.addQuestion = function () {
         $scope.$emit(ADD_QUESTION,
                      {text: $scope.questionText, choices: $scope.choices});

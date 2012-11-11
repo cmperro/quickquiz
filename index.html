@@ -8,6 +8,7 @@
         <link rel="stylesheet" href="css/printfriendly.css" type="text/css" media="print" charset="utf-8">
         <script src="scripts/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="scripts/angular.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://raw.github.com/angular-ui/angular-ui/master/build/angular-ui.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="scripts/quiz.js" type="text/javascript" charset="utf-8"></script>
     </head>
     <body>
@@ -25,6 +26,7 @@
                                 <ol>
                                     <li ng-repeat="choice in choices">
                                         {{choice}}
+                                        <i class="icon-remove" ng-click="removeChoice($index);"></i>
                                     </li>
                                     <li style="list-style-type: none;">
                                         <input type="text" ng-model="choiceText" placeholder="Type a choice here" class="input-block-level">
@@ -43,7 +45,9 @@
                                 <legend>Shuffle</legend>
                                 <span class="help-block">Randomly shuffle the order of the answers to your
                                     questions.</span>
-                                <button type="button" ng-click="shuffleChoices()" class="btn btn-block btn-primary">Shuffle all of the Answers</button>
+                                <button type="button" ng-click="shuffleChoices()" class="btn btn-block btn-primary">
+                                    Shuffle all of the Answers
+                                </button>
                             </fieldset>
                         </form>
                     </div>
@@ -57,7 +61,7 @@
                         <ol>
                             <li ng-repeat="question in questions">
                                 <span>{{question.text}}</span>
-                                <ul>
+                                <ul ui:sortable ng:model="question.choices">
                                     <li ng-repeat="choice in question.choices">
                                         {{choice}}
                                     </li>
