@@ -4,10 +4,9 @@
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <title>Quickly Quiz</title>
         <link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" charset="utf-8">
-        <link rel="stylesheet" href="css/quiz.css" type="text/css" media="screen" charset="utf-8">
+        <link rel="stylesheet" href="css/quiz.css" type="text/css" media="all" charset="utf-8">
         <link rel="stylesheet" href="css/printfriendly.css" type="text/css" media="print" charset="utf-8">
         <script src="scripts/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="scripts/angular.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="https://raw.github.com/angular-ui/angular-ui/master/build/angular-ui.min.js" type="text/javascript" charset="utf-8"></script>
         <script src="scripts/quiz.js" type="text/javascript" charset="utf-8"></script>
     </head>
@@ -55,11 +54,12 @@
                 <div class="span9">
                     <!-- Quiz content-->
                     <div id="quiz" class="well">
-                        <div>
+                        <div id="name">Name: </div>
+                        <div id="directions">
                             This quiz contains {{questions.length;}} questions. Good Luck!
                         </div>
                         <ol>
-                            <li ng-repeat="question in questions">
+                            <li ng-repeat="question in questions" class="question">
                                 <span>{{question.text}}</span>
                                 <ul ui:sortable ng:model="question.choices">
                                     <li ng-repeat="choice in question.choices">

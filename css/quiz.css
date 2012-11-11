@@ -1,7 +1,23 @@
+body {
+    background-color: #EEEEEE;
+}
+
 #quiz {
     color: black;
-    width: 5.5in;
+    width: 8.5in;
     max-height: 11in;
     background-color: white;
-    /*border: 1px solid black;*/
+    border: 1px solid black;
+}
+
+#name {
+    border-bottom: 2px solid black;
+}
+
+#directions {
+    padding-top: 10px;
+}
+
+.question {
+    padding-top: 10px;
 }
