@@ -61,7 +61,29 @@ angular.module('quiz', []).directive('sortable', function() {
     return {
         restrict: 'A',
         link: function(scope, iElement, iAttrs) {
-            $(iElement).sortable();
+            var model = scope.$eval(iAttrs.sortable);
+            var start, end, changed;
+            changed = false;
+            $(iElement).sortable({
+                start: function(event, ui) {
+                    start = ui.item.index();
+                },
+                update: function() {
+                    changed = true;
+                },
+                stop: function(event, ui) {
+                    end = ui.item.index();
+                    if (changed) {
+                        scope.$apply(function() {
+                            // Swap elements at index start and end
+                            var temp = model[start];
+                            model[start] = model[end];
+                            model[end] = temp;
+                        });
+                    }
+                    changed = false;
+                }
+            });
         }
     };
 });
