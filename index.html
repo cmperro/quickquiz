@@ -60,7 +60,7 @@
                         <div id="directions">
                             This quiz contains {{questions.length;}} questions. Good Luck!
                         </div>
-                        <ol class="questions">
+                        <ol class="questions" sortable>
                             <li ng-repeat="question in questions" class="question">
                                 <span>{{question.text}}</span>
                                 <ul ui:sortable ng:model="question.choices" class="choices" sortable>
