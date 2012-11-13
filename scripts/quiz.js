@@ -56,3 +56,12 @@ Array.prototype.shuffle = function () {
    }
   return this;
 }
+
+angular.module('quiz', []).directive('sortable', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, iElement, iAttrs) {
+            $(iElement).sortable();
+        }
+    };
+});
