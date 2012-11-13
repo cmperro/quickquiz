@@ -5,7 +5,7 @@ body {
 #quiz {
     color: black;
     width: 8.5in;
-    max-height: 11in;
+    height: 11in;
     background-color: white;
     border: 1px solid black;
 }
