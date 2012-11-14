@@ -62,10 +62,14 @@
                         </div>
                         <ol class="questions" sortable="questions">
                             <li ng-repeat="question in questions" class="question">
-                                <span>{{question.text}}</span>
+                                <span ng-mouseenter="showquestioneditor=true;" ng-mouseleave="showquestioneditor=false;">
+                                    {{question.text}}
+                                    <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
+                                </span>
                                 <ul class="choices" sortable="question.choices">
-                                    <li ng-repeat="choice in question.choices">
+                                    <li ng-mouseenter="showchoiceeditor=true;" ng-mouseleave="showchoiceeditor=false;" ng-repeat="choice in question.choices">
                                         {{choice}}
+                                        <i class="icon-remove" ng-show="showchoiceeditor" ng-click="removeChoice(question, $index);"></i>
                                     </li>
                                 </ul>
                             </li>

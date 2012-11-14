@@ -10,6 +10,15 @@ function QuestionControl($scope) {
         $scope.questions.push(newQuestion);
     });
 
+    $scope.removeQuestion = function(question) {
+        index = $scope.questions.indexOf(question);
+        $scope.questions.splice(index, 1);
+    }
+
+    $scope.removeChoice = function(question, index) {
+        question.choices.splice(index, 1);
+    }
+
     $scope.shuffleChoices = function() {
         angular.forEach($scope.questions, function(question) {
             question.choices.shuffle();
