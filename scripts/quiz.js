@@ -19,6 +19,8 @@ function QuestionControl($scope) {
 
 function QuestionEditorControl($scope) {
 
+    $scope.ChoiceAddedEvent = 'ChoiceAdded'
+
     function reset() {
         $scope.questionText = '';
         $scope.choices = [];
@@ -27,9 +29,10 @@ function QuestionEditorControl($scope) {
     reset();
 
 
-    $scope.addChoice = function () {
+    $scope.addChoice = function ($event) {
         $scope.choices.push($scope.choiceText);
         $scope.choiceText = '';
+        $scope.$emit($scope.ChoiceAddedEvent);
     };
 
     $scope.removeChoice = function (index) {
@@ -83,6 +86,18 @@ angular.module('quiz', []).directive('sortable', function() {
                     }
                     changed = false;
                 }
+            });
+        }
+    };
+}).directive('focusOn', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, iElement, iAttrs) {
+            event_name = scope.$eval(iAttrs.focusOn);
+            console.log(event_name);
+            scope.$on(event_name, function() {
+                console.log(iElement);
+                iElement[0].focus();
             });
         }
     };
