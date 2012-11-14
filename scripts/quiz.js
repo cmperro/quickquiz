@@ -96,7 +96,6 @@ angular.module('quiz', []).directive('sortable', function() {
             event_name = scope.$eval(iAttrs.focusOn);
             console.log(event_name);
             scope.$on(event_name, function() {
-                console.log(iElement);
                 iElement[0].focus();
             });
         }
