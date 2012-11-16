@@ -114,16 +114,17 @@ angular.module('quiz', []).directive('sortable', function() {
 }).directive('editable', function() {
     return {
         restrict: 'A',
-        link: function(scope, iElement, iAttrs) {
-            var iElement = $(iElement);
-            var editor = $('<input type="text"></input>')
-            editor.blur(function() {
-                $(this).before(iElement).remove();
+        link: function(scope, plainDOM, iAttrs) {
+            var editor = angular.element('<input type="text"></input>');
+            console.log(editor);
+
+            editor.bind('blur', function() {
+                editor.after(plainDOM).remove();
             });
-            iElement.dblclick(function() {
-                console.log("got it");
-                iElement.after(editor);
-                iElement.remove();
+
+            plainDOM.bind('click', function() {
+                plainDOM.after(editor).remove();
+                editor.
             });
         }
     };
