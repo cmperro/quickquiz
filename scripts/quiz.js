@@ -111,4 +111,20 @@ angular.module('quiz', []).directive('sortable', function() {
             });
         }
     };
+}).directive('editable', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, iElement, iAttrs) {
+            var iElement = $(iElement);
+            var editor = $('<input type="text"></input>')
+            editor.blur(function() {
+                $(this).before(iElement).remove();
+            });
+            iElement.dblclick(function() {
+                console.log("got it");
+                iElement.after(editor);
+                iElement.remove();
+            });
+        }
+    };
 });

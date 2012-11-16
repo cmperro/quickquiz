@@ -63,7 +63,7 @@
                         <ol class="questions" ng-model="questions" sortable>
                             <li ng-repeat="question in questions" class="question">
                                 <span ng-mouseenter="showquestioneditor=true;" ng-mouseleave="showquestioneditor=false;">
-                                    {{question.text}}
+                                    <span editable ng-bind="question.text"></span>
                                     <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
                                 </span>
                                 <ul class="choices" ng-model="question.choices" sortable>
