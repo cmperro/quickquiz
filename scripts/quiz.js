@@ -73,7 +73,10 @@ angular.module('quiz', []).directive('sortable', function() {
     return {
         restrict: 'A',
         link: function(scope, iElement, iAttrs) {
-            var model = scope.$eval(iAttrs.sortable);
+            var model = scope.$eval(iAttrs.ngModel);
+            if (!model) {
+                throw 'ngModel is required for the sortable directive';
+            }
             var start, end, changed;
             changed = false;
             $(iElement).sortable({
