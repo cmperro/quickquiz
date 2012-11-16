@@ -8,20 +8,6 @@ function QuestionControl($scope) {
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]}
     ];
 
@@ -107,11 +93,13 @@ angular.module('quiz', [])
             }
         };
     })
-    .directive('columnize', function() {
+    .directive('columnize', function($timeout) {
         return {
             restrict: 'A',
             link: function(scope, iElement, iAttrs) {
-                $(iElement).columnize({columns: 2});
+                $timeout(function() {
+                    $(iElement).columnize({columns: 2})
+                }, 0);
             }
         };
     });
