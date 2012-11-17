@@ -13,22 +13,22 @@ function QuestionControl($scope) {
     $scope.removeQuestion = function(question) {
         index = $scope.questions.indexOf(question);
         $scope.questions.splice(index, 1);
-    }
+    };
 
     $scope.removeChoice = function(question, index) {
         question.choices.splice(index, 1);
-    }
+    };
 
     $scope.shuffleChoices = function() {
         angular.forEach($scope.questions, function(question) {
             question.choices.shuffle();
-        })
+        });
     };
 }
 
 function QuestionEditorControl($scope) {
 
-    $scope.ChoiceAddedEvent = 'ChoiceAdded'
+    $scope.ChoiceAddedEvent = 'ChoiceAdded';
 
     function reset() {
         $scope.questionText = '';
@@ -58,16 +58,18 @@ function QuestionEditorControl($scope) {
 // Procured from: http://stackoverflow.com/questions/2450954/how-to-randomize-a-javascript-array
 Array.prototype.shuffle = function () {
   var i = this.length, j, tempi, tempj;
-  if ( i == 0 ) return false;
+  if ( i === 0 ) {
+      return false;
+  }
   while ( --i ) {
-     var j = Math.floor( Math.random() * ( i + 1 ) );
-     var tempi = this[i];
-     var tempj = this[j];
+     j = Math.floor( Math.random() * ( i + 1 ) );
+     tempi = this[i];
+     tempj = this[j];
      this[i] = tempj;
      this[j] = tempi;
    }
   return this;
-}
+};
 
 angular.module('quiz', []).directive('sortable', function() {
     return {
@@ -115,16 +117,23 @@ angular.module('quiz', []).directive('sortable', function() {
     return {
         restrict: 'A',
         link: function(scope, plainDOM, iAttrs) {
-            var editor = angular.element('<input type="text"></input>');
-            console.log(editor);
-
-            editor.bind('blur', function() {
-                editor.after(plainDOM).remove();
+            var editor = $('<input type="text"></input>');
+            editor.hide();
+            editor.change(function() {
+                console.log("change: " + editor.val());
+                scope.$apply(function() {
+                    scope.$eval(iAttrs.ngBind) = editor.val();
+                });
+            });
+            editor.blur(function() {
+                editor.hide();
+                plainDOM.show();
             });
 
-            plainDOM.bind('click', function() {
-                plainDOM.after(editor).remove();
-                editor.
+            plainDOM.after(editor);
+            plainDOM.click(function() {
+                editor.show().focus();
+                plainDOM.hide();
             });
         }
     };
