@@ -74,11 +74,10 @@ Array.prototype.shuffle = function () {
 angular.module('quiz', []).directive('sortable', function() {
     return {
         restrict: 'A',
+        require: 'ngModel',
         link: function(scope, iElement, iAttrs) {
+            console.log("sortable");
             var model = scope.$eval(iAttrs.ngModel);
-            if (!model) {
-                throw 'ngModel is required for the sortable directive';
-            }
             var start, end, changed;
             changed = false;
             $(iElement).sortable({
@@ -156,3 +155,4 @@ angular.module('quiz', []).directive('sortable', function() {
         }
     };
 });
+
