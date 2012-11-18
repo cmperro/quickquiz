@@ -67,9 +67,13 @@
                                     <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
                                 </span>
                                 <ul class="choices" ng-model="question.choices" sortable>
-                                    <li ng-mouseenter="showchoiceeditor=true;" ng-mouseleave="showchoiceeditor=false;" ng-repeat="choice in question.choices">
-                                        {{choice}}
-                                        <i class="icon-remove" ng-show="showchoiceeditor" ng-click="removeChoice(question, $index);"></i>
+                                    <li ng-init="showdelete=false;"
+                                        ng-mouseenter="showdelete=true;"
+                                        ng-mouseleave="showdelete=false;"
+                                        ng-repeat="choice in question.choices">
+                                        <!--<span editable ng-model="choice"></span>-->
+                                        <span editable ng-model="choice"></span>
+                                        <i class="icon-remove" ng-show="showdelete" ng-click="removeChoice(question, $index);"></i>
                                     </li>
                                 </ul>
                             </li>

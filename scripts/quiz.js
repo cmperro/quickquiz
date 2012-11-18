@@ -3,7 +3,7 @@ var ADD_QUESTION = 'ADD_QUESTION';
 function QuestionControl($scope) {
     $scope.questions = [
         {text: 'Is the world round?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]}
+        {text: 'Favorite animal?', choices: ['Cat', 'Dog', 'Elephant' ]}
     ];
 
     $scope.$on(ADD_QUESTION, function (event, newQuestion) {
@@ -119,30 +119,34 @@ angular.module('quiz', []).directive('sortable', function() {
         require: 'ngModel',
         link: function(scope, plainDOM, iAttrs, ngModel) {
 
+            // Setup the display
+            var display = $('<span></span>');
+            display.text(ngModel.$modelValue);
+            display.bind('click', switchToEditMode);
+            function switchToEditMode() {
+                editor.val(display.text()).show().focus();
+                display.hide();
+            }
+            plainDOM.append(display);
+
             // Setup the editor
             var editor = $('<input type="text"></input>');
             editor.hide();
             editor.bind('blur change', switchToDisplayMode);
             function switchToDisplayMode() {
-                console.log(ngModel);
                 editor.hide();
-                plainDOM.show();
+                display.show();
                 scope.$apply(function() {
+                    console.log(ngModel);
                     ngModel.$setViewValue(editor.val());
+                    console.log(ngModel);
                 });
             }
-
-            // Setup the display
-            plainDOM.after(editor);
-            plainDOM.text(ngModel.$modelValue);
-            plainDOM.bind('click', switchToEditMode);
-            function switchToEditMode() {
-                editor.val(plainDOM.text()).show().focus();
-                plainDOM.hide();
-            }
+            plainDOM.append(editor);
 
             scope.$watch(iAttrs.ngModel, function() {
-                plainDOM.text(ngModel.$viewValue || '');
+                console.log(scope[iAttrs.ngModel]);
+                display.text(ngModel.$viewValue || '');
             });
         }
     };
