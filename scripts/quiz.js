@@ -116,24 +116,33 @@ angular.module('quiz', []).directive('sortable', function() {
 }).directive('editable', function() {
     return {
         restrict: 'A',
-        link: function(scope, plainDOM, iAttrs) {
+        require: 'ngModel',
+        link: function(scope, plainDOM, iAttrs, ngModel) {
+
+            // Setup the editor
             var editor = $('<input type="text"></input>');
             editor.hide();
-            editor.change(function() {
-                console.log("change: " + editor.val());
-                scope.$apply(function() {
-                    scope.$eval(iAttrs.ngBind) = editor.val();
-                });
-            });
-            editor.blur(function() {
+            editor.bind('blur change', switchToDisplayMode);
+            function switchToDisplayMode() {
+                console.log(ngModel);
                 editor.hide();
                 plainDOM.show();
-            });
+                scope.$apply(function() {
+                    ngModel.$setViewValue(editor.val());
+                });
+            }
 
+            // Setup the display
             plainDOM.after(editor);
-            plainDOM.click(function() {
-                editor.show().focus();
+            plainDOM.text(ngModel.$modelValue);
+            plainDOM.bind('click', switchToEditMode);
+            function switchToEditMode() {
+                editor.val(plainDOM.text()).show().focus();
                 plainDOM.hide();
+            }
+
+            scope.$watch(iAttrs.ngModel, function() {
+                plainDOM.text(ngModel.$viewValue || '');
             });
         }
     };
