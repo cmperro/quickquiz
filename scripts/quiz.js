@@ -52,7 +52,7 @@ function QuestionEditorControl($scope) {
 Array.prototype.shuffle = function () {
   var i = this.length, j, tempi, tempj;
   if ( i === 0 ) {
-       return false;
+      return false;
   }
   while ( --i ) {
      j = Math.floor( Math.random() * ( i + 1 ) );
