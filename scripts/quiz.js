@@ -130,22 +130,20 @@ angular.module('quiz', []).directive('sortable', function() {
             plainDOM.append(display);
 
             // Setup the editor
-            var editor = $('<input type="text"></input>');
+            var editor = $('<input type="text" ng-model="'+ iAttrs.ngModel + '"></input>');
             editor.hide();
             editor.bind('blur change', switchToDisplayMode);
             function switchToDisplayMode() {
                 editor.hide();
+                editor.sandro();
                 display.show();
                 scope.$apply(function() {
-                    console.log(ngModel);
                     ngModel.$setViewValue(editor.val());
-                    console.log(ngModel);
                 });
             }
             plainDOM.append(editor);
 
             scope.$watch(iAttrs.ngModel, function() {
-                console.log(scope[iAttrs.ngModel]);
                 display.text(ngModel.$viewValue || '');
             });
         }
