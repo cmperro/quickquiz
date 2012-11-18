@@ -61,23 +61,25 @@
                         <div id="directions">
                             This quiz contains {{questions.length;}} questions. Good Luck!
                         </div>
-                        <ol class="questions" ng-model="questions" sortable columnize>
-                            <li ng-repeat="question in questions" class="question">
+                        <div class="questions" ng-model="questions" sortable columnize>
+                            <div ng-repeat="question in questions" class="question">
                                 <span ng-mouseenter="showquestioneditor=true;" ng-mouseleave="showquestioneditor=false;">
+                                    <span>{{$index + 1}}.</span>
                                     <span editable ng-model="question.text"></span>
                                     <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
                                 </span>
-                                <ul class="choices" ng-model="question.choices" sortable>
-                                    <li ng-init="showdelete=false;"
-                                        ng-mouseenter="showdelete=true;"
-                                        ng-mouseleave="showdelete=false;"
-                                        ng-repeat="choice in question.choices">
+                                <div class="choices" ng-model="question.choices" sortable>
+                                    <div ng-init="showdelete=false;"
+                                            ng-mouseenter="showdelete=true;"
+                                            ng-mouseleave="showdelete=false;"
+                                            ng-repeat="choice in question.choices">
+                                        <span>{{$index + 1}}. </span>
                                         <span editable ng-model="question.choices[$index]"></span>
                                         <i class="icon-remove" ng-show="showdelete" ng-click="removeChoice(question, $index);"></i>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ol>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
