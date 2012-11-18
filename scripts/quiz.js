@@ -18,7 +18,7 @@ function QuestionControl($scope) {
     $scope.shuffleChoices = function() {
         angular.forEach($scope.questions, function(question) {
             question.choices.shuffle();
-        })
+        });
     };
 }
 
@@ -51,55 +51,56 @@ function QuestionEditorControl($scope) {
 // Procured from: http://stackoverflow.com/questions/2450954/how-to-randomize-a-javascript-array
 Array.prototype.shuffle = function () {
   var i = this.length, j, tempi, tempj;
-  if ( i == 0 ) return false;
+  if ( i === 0 ) {
+    return false;
+  }
   while ( --i ) {
-     var j = Math.floor( Math.random() * ( i + 1 ) );
-     var tempi = this[i];
-     var tempj = this[j];
+     j = Math.floor( Math.random() * ( i + 1 ) );
+     tempi = this[i];
+     tempj = this[j];
      this[i] = tempj;
      this[j] = tempi;
    }
   return this;
-}
+};
 
 angular.module('quiz', [])
-    .directive('sortable', function() {
-        return {
-            restrict: 'A',
-            link: function(scope, iElement, iAttrs) {
-                var model = scope.$eval(iAttrs.sortable);
-                var start, end, changed;
-                changed = false;
-                $(iElement).sortable({
-                    start: function(event, ui) {
-                        start = ui.item.index();
-                    },
-                    update: function() {
-                        changed = true;
-                    },
-                    stop: function(event, ui) {
-                        end = ui.item.index();
-                        if (changed) {
-                            scope.$apply(function() {
-                                // Swap elements at index start and end
-                                var temp = model[start];
-                                model[start] = model[end];
-                                model[end] = temp;
-                            });
-                        }
-                        changed = false;
+.directive('sortable', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, iElement, iAttrs) {
+            var model = scope.$eval(iAttrs.sortable);
+            var start, end, changed;
+            changed = false;
+            $(iElement).sortable({
+                start: function(event, ui) {
+                    start = ui.item.index();
+                },
+                update: function() {
+                    changed = true;
+                },
+                stop: function(event, ui) {
+                    end = ui.item.index();
+                    if (changed) {
+                        scope.$apply(function() {
+                            // Swap elements at index start and end
+                            var temp = model[start];
+                            model[start] = model[end];
+                            model[end] = temp;
+                        });
                     }
-                });
-            }
-        };
-    })
-    .directive('columnize', function($timeout) {
-        return {
-            restrict: 'A',
-            link: function(scope, iElement, iAttrs) {
-                $timeout(function() {
-                    $(iElement).columnize({columns: 2})
-                }, 0);
-            }
-        };
-    });
+                    changed = false;
+                }
+            });
+        }
+    };
+}).directive('columnize', function($timeout) {
+    return {
+        restrict: 'A',
+        link: function(scope, iElement, iAttrs) {
+            $timeout(function() {
+                $(iElement).columnize({columns: 2});
+            }, 0);
+        }
+    };
+});
