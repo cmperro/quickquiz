@@ -148,4 +148,11 @@ angular.module('quiz', []).directive('sortable', function() {
             });
         }
     };
+}).directive('columnize', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, ele, iAttrs) {
+          console.log(scope, ele, iAttrs);
+        }
+    };
 });
