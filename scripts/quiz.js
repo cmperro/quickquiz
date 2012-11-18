@@ -93,13 +93,11 @@ angular.module('quiz', []).directive('sortable', function() {
             });
         }
     };
-}).directive('columnize', function($timeout) {
+}).directive('columnize', function() {
     return {
         restrict: 'A',
         link: function(scope, iElement, iAttrs) {
-            $timeout(function() {
-                $(iElement).columnize({columns: 2});
-            }, 0);
+            $(iElement).columnize({columns: 2});
         }
     };
 });
