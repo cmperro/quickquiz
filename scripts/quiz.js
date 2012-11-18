@@ -52,7 +52,7 @@ function QuestionEditorControl($scope) {
 Array.prototype.shuffle = function () {
   var i = this.length, j, tempi, tempj;
   if ( i === 0 ) {
-    return false;
+       return false;
   }
   while ( --i ) {
      j = Math.floor( Math.random() * ( i + 1 ) );
@@ -64,8 +64,7 @@ Array.prototype.shuffle = function () {
   return this;
 };
 
-angular.module('quiz', [])
-.directive('sortable', function() {
+angular.module('quiz', []).directive('sortable', function() {
     return {
         restrict: 'A',
         link: function(scope, iElement, iAttrs) {
