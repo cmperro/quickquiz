@@ -11,7 +11,7 @@ function QuestionControl($scope) {
     });
 
     $scope.removeQuestion = function(question) {
-        index = $scope.questions.indexOf(question);
+        var index = $scope.questions.indexOf(question);
         $scope.questions.splice(index, 1);
     };
 
@@ -106,7 +106,7 @@ angular.module('quiz', []).directive('sortable', function() {
     return {
         restrict: 'A',
         link: function(scope, iElement, iAttrs) {
-            event_name = scope.$eval(iAttrs.focusOn);
+            var event_name = scope.$eval(iAttrs.focusOn);
             scope.$on(event_name, function() {
                 iElement[0].focus();
             });
@@ -134,7 +134,6 @@ angular.module('quiz', []).directive('sortable', function() {
             editor.bind('blur change', switchToDisplayMode);
             function switchToDisplayMode() {
                 editor.hide();
-                editor.sandro();
                 display.show();
                 scope.$apply(function() {
                     ngModel.$setViewValue(editor.val());
@@ -150,8 +149,8 @@ angular.module('quiz', []).directive('sortable', function() {
 }).directive('columnize', function() {
     return {
         restrict: 'A',
-        link: function(scope, ele, iAttrs) {
-          console.log(scope, ele, iAttrs);
+        link: function(scope, element, attrs) {
+            console.log(element.children());
         }
     };
 });
