@@ -8,12 +8,22 @@ function QuestionControl($scope) {
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]}
+        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
+        {text: 'Favorite animal?', choices: ['Cat', 'Dog', 'Elephant' ]}
     ];
 
     $scope.$on(ADD_QUESTION, function (event, newQuestion) {
         $scope.questions.push(newQuestion);
     });
+
+    $scope.removeQuestion = function(question) {
+        var index = $scope.questions.indexOf(question);
+        $scope.questions.splice(index, 1);
+    };
+
+    $scope.removeChoice = function(question, index) {
+        question.choices.splice(index, 1);
+    };
 
     $scope.shuffleChoices = function() {
         angular.forEach($scope.questions, function(question) {
@@ -24,6 +34,8 @@ function QuestionControl($scope) {
 
 function QuestionEditorControl($scope) {
 
+    $scope.ChoiceAddedEvent = 'ChoiceAdded';
+
     function reset() {
         $scope.questionText = '';
         $scope.choices = [];
@@ -32,9 +44,10 @@ function QuestionEditorControl($scope) {
     reset();
 
 
-    $scope.addChoice = function () {
+    $scope.addChoice = function ($event) {
         $scope.choices.push($scope.choiceText);
         $scope.choiceText = '';
+        $scope.$emit($scope.ChoiceAddedEvent);
     };
 
     $scope.removeChoice = function (index) {
@@ -67,8 +80,10 @@ Array.prototype.shuffle = function () {
 angular.module('quiz', []).directive('sortable', function() {
     return {
         restrict: 'A',
+        require: 'ngModel',
         link: function(scope, iElement, iAttrs) {
-            var model = scope.$eval(iAttrs.sortable);
+            console.log("sortable");
+            var model = scope.$eval(iAttrs.ngModel);
             var start, end, changed;
             changed = false;
             $(iElement).sortable({
@@ -93,11 +108,56 @@ angular.module('quiz', []).directive('sortable', function() {
             });
         }
     };
-}).directive('columnize', function() {
+}).directive('focusOn', function() {
     return {
         restrict: 'A',
         link: function(scope, iElement, iAttrs) {
-            $(iElement).columnize({columns: 2});
+            var event_name = scope.$eval(iAttrs.focusOn);
+            scope.$on(event_name, function() {
+                iElement[0].focus();
+            });
+        }
+    };
+}).directive('editable', function() {
+    return {
+        restrict: 'A',
+        require: 'ngModel',
+        link: function(scope, plainDOM, iAttrs, ngModel) {
+
+            // Setup the display
+            var display = $('<span></span>');
+            display.text(ngModel.$modelValue);
+            display.bind('click', switchToEditMode);
+            function switchToEditMode() {
+                editor.val(display.text()).show().focus();
+                display.hide();
+            }
+            plainDOM.append(display);
+
+            // Setup the editor
+            var editor = $('<input type="text" ng-model="'+ iAttrs.ngModel + '"></input>');
+            editor.hide();
+            editor.bind('blur change', switchToDisplayMode);
+            function switchToDisplayMode() {
+                editor.hide();
+                display.show();
+                scope.$apply(function() {
+                    ngModel.$setViewValue(editor.val());
+                });
+            }
+            plainDOM.append(editor);
+
+            scope.$watch(iAttrs.ngModel, function() {
+                display.text(ngModel.$viewValue || '');
+            });
+        }
+    };
+}).directive('columnize', function() {
+    return {
+        restrict: 'A',
+        link: function(scope, element, attrs) {
+            console.log(element.children());
         }
     };
 });
+
