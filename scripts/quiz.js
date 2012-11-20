@@ -3,6 +3,12 @@ var ADD_QUESTION = 'ADD_QUESTION';
 function QuestionControl($scope) {
     $scope.questions = [
         {text: 'Is the world round?', choices: ['Yes', 'No', 'Maybe' ]},
+        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
+        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
+        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
+        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
+        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
+        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Favorite animal?', choices: ['Cat', 'Dog', 'Elephant' ]}
     ];
 
@@ -76,11 +82,12 @@ angular.module('quiz', []).directive('sortable', function() {
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, iElement, iAttrs) {
-            console.log("sortable");
             var model = scope.$eval(iAttrs.ngModel);
             var start, end, changed;
             changed = false;
+            console.log(iAttrs);
             $(iElement).sortable({
+                items: iAttrs.sortable,
                 start: function(event, ui) {
                     start = ui.item.index();
                 },
@@ -146,11 +153,25 @@ angular.module('quiz', []).directive('sortable', function() {
             });
         }
     };
-}).directive('columnize', function() {
+}).directive('columnize', function($timeout) {
     return {
         restrict: 'A',
+        require: 'ngModel',
         link: function(scope, element, attrs) {
-            console.log(element.children());
+            scope.$watch(attrs.ngModel, function() {
+                $timeout(function(){
+                    var left = $('<div style="width:50%; float:left;">');
+                    var right = $('<div style="width:50%; float:left;">');
+                    element.children().each(function(index, child) {
+                        if (index % 2 === 0) {
+                            left.append($(child));
+                        }
+                    });
+                    right.append(element.children());
+                    element.append(left);
+                    element.append(right);
+                },0);
+            });
         }
     };
 });
