@@ -82,23 +82,25 @@
                         <div id="directions">
                             This quiz contains {{questions.length;}} questions. Good Luck!
                         </div>
-                        <div class="questions" ng-model="questions" sortable=".question" columnize>
-                            <div ng-repeat="question in questions" class="question">
-                                <span ng-mouseenter="showquestioneditor=true;"
-                                      ng-mouseleave="showquestioneditor=false;">
-                                    <span>{{$index + 1}}.</span>
-                                    <span editable ng-model="question.text"></span>
-                                    <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
-                                </span>
-                                <div class="choices" ng-model="question.choices" sortable=".choice">
-                                    <div ng-init="showdelete=false;"
-                                         ng-mouseenter="showdelete=true;"
-                                         ng-mouseleave="showdelete=false;"
-                                         ng-repeat="choice in question.choices"
-                                         class="choice">
-                                        <span>{{$index + 1}}. </span>
-                                        <span editable ng-model="question.choices[$index]"></span>
-                                        <i class="icon-remove" ng-show="showdelete" ng-click="removeChoice(question, $index);"></i>
+                        <div sortable=".question" ng-model="questions">
+                            <div class="questions" ng-model="questions" columnize>
+                                <div ng-repeat="question in questions" class="question">
+                                    <span ng-mouseenter="showquestioneditor=true;"
+                                        ng-mouseleave="showquestioneditor=false;">
+                                        <span>{{$index + 1}}.</span>
+                                        <span editable ng-model="question.text"></span>
+                                        <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
+                                    </span>
+                                    <div class="choices" ng-model="question.choices" sortable=".choice">
+                                        <div ng-init="showdelete=false;"
+                                            ng-mouseenter="showdelete=true;"
+                                            ng-mouseleave="showdelete=false;"
+                                            ng-repeat="choice in question.choices"
+                                            class="choice">
+                                            <span>{{$index + 1}}. </span>
+                                            <span editable ng-model="question.choices[$index]"></span>
+                                            <i class="icon-remove" ng-show="showdelete" ng-click="removeChoice(question, $index);"></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
