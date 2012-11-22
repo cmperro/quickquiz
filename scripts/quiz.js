@@ -85,9 +85,9 @@ angular.module('quiz', []).directive('sortable', function() {
             var model = scope.$eval(iAttrs.ngModel);
             var start, end, changed;
             changed = false;
-            console.log(iAttrs);
-            $(iElement).sortable({
-                items: iAttrs.sortable,
+            console.log(iAttrs.sortable, iElement.find(iAttrs.sortable));
+            iElement.find(iAttrs.sortable).sortable({
+                connectWith: iAttrs.sortable,
                 start: function(event, ui) {
                     start = ui.item.index();
                 },
@@ -154,22 +154,57 @@ angular.module('quiz', []).directive('sortable', function() {
         }
     };
 }).directive('columnize', function($timeout) {
+    var COLUMN_CLASS = 'column';
     return {
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs) {
             scope.$watch(attrs.ngModel, function() {
                 $timeout(function(){
-                    var left = $('<div style="width:50%; float:left;">');
-                    var right = $('<div style="width:50%; float:left;">');
+                    // Layout into columns
+                    left = $('<div>').attr({
+                        style: "width:50%;float:left",
+                        class: COLUMN_CLASS
+                    });
+                    var right = left.clone();
                     element.children().each(function(index, child) {
                         if (index % 2 === 0) {
                             left.append($(child));
                         }
                     });
                     right.append(element.children());
-                    element.append(left);
-                    element.append(right);
+                    var columns = $(left).add(right);
+                    element.append(columns);
+                    console.log('columnized');
+
+                    // Implement DnD, model updating sorting
+                    var model = scope.$eval(attrs.ngModel);
+                    var start, end, changed;
+                    changed = false;
+                    if (columns.hasClass('ui-sortable')) {
+                        console.log("Found sortable");
+                    }
+                    columns.sortable({
+                        connectWith: '.' + COLUMN_CLASS,
+                        start: function(event, ui) {
+                            start = ui.item.index();
+                        },
+                        update: function() {
+                            changed = true;
+                        },
+                        stop: function(event, ui) {
+                            end = ui.item.index();
+                            if (changed) {
+                                scope.$apply(function() {
+                                     //Swap elements at index start and end
+                                    var temp = model[start];
+                                    model[start] = model[end];
+                                    model[end] = temp;
+                                });
+                            }
+                            changed = false;
+                        }
+                    }).disableSelection();
                 },0);
             });
         }
