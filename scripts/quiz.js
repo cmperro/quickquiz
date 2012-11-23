@@ -158,8 +158,10 @@ angular.module('quiz', []).directive('sortable', function() {
     return {
         restrict: 'A',
         require: 'ngModel',
+        transclude: true,
         link: function(scope, element, attrs) {
             scope.$watch(attrs.ngModel, function() {
+                console.log('changed');
                 $timeout(function(){
                     // Layout into columns
                     left = $('<div>').attr({
@@ -175,7 +177,6 @@ angular.module('quiz', []).directive('sortable', function() {
                     right.append(element.children());
                     var columns = $(left).add(right);
                     element.append(columns);
-                    console.log('columnized');
 
                     // Implement DnD, model updating sorting
                     var model = scope.$eval(attrs.ngModel);
@@ -184,6 +185,7 @@ angular.module('quiz', []).directive('sortable', function() {
                     if (columns.hasClass('ui-sortable')) {
                         console.log("Found sortable");
                     }
+                    console.log("column class match", $('.' + COLUMN_CLASS));
                     columns.sortable({
                         connectWith: '.' + COLUMN_CLASS,
                         start: function(event, ui) {
@@ -195,12 +197,10 @@ angular.module('quiz', []).directive('sortable', function() {
                         stop: function(event, ui) {
                             end = ui.item.index();
                             if (changed) {
-                                scope.$apply(function() {
-                                     //Swap elements at index start and end
-                                    var temp = model[start];
-                                    model[start] = model[end];
-                                    model[end] = temp;
-                                });
+                                //Swap elements at index start and end
+                                var temp = model[start];
+                                model[start] = model[end];
+                                model[end] = temp;
                             }
                             changed = false;
                         }
