@@ -1,6 +1,16 @@
 var ADD_QUESTION = 'ADD_QUESTION';
 
 function QuestionControl($scope) {
+    $scope.BULLET_STYLES = {
+        // http://en.wikipedia.org/wiki/Unicode_Geometric_Shapes
+        circle: function() { return '\u25EF'; },
+        none: function() {return '&nbsp;';},
+        number: function(index) {
+            return (index+1) + '.';
+        },
+        square: function() { return '\u25A1'; },
+    };
+
     $scope.questions = [
         {text: 'Is the world round?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
@@ -11,6 +21,12 @@ function QuestionControl($scope) {
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Favorite animal?', choices: ['Cat', 'Dog', 'Elephant' ]}
     ];
+
+    $scope.style = {
+        choices: {
+            bullet: $scope.BULLET_STYLES.number
+        }
+    };
 
     $scope.$on(ADD_QUESTION, function (event, newQuestion) {
         $scope.questions.push(newQuestion);
@@ -30,6 +46,8 @@ function QuestionControl($scope) {
             question.choices.shuffle();
         });
     };
+
+
 }
 
 function QuestionEditorControl($scope) {
