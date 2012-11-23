@@ -158,7 +158,6 @@ angular.module('quiz', []).directive('sortable', function() {
     return {
         restrict: 'A',
         require: 'ngModel',
-        transclude: true,
         link: function(scope, element, attrs) {
             scope.$watch(attrs.ngModel, function() {
                 console.log('changed');
