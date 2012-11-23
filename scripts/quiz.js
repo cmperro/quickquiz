@@ -11,6 +11,12 @@ function QuestionControl($scope) {
         square: function() { return '\u25A1'; },
     };
 
+    $scope.FONTS = [
+        {name: "Times New Roman", style: '"Times New Roman", Georgia, Serif'},
+        {name: "Arial", style: 'arial, sans-serif'},
+        {name: "Georgia", style: 'Georgia, Serif'},
+    ];
+
     $scope.questions = [
         {text: 'Is the world round?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
@@ -23,6 +29,7 @@ function QuestionControl($scope) {
     ];
 
     $scope.style = {
+        font: $scope.FONTS[1],
         choices: {
             bullet: $scope.BULLET_STYLES.number
         }

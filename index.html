@@ -66,13 +66,14 @@
                                     </button>
                                 </div>
                                 <div class="btn-group">
+                                    <button class="btn" style="font-family: {{style.font.style}};">{{style.font.name}}</button>
                                     <button class="btn dropdown-toggle" data-toggle="dropdown">
-                                        Times New Roman
+                                        <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li><a>Times New Roman</a></li>
-                                        <li><a>Arial</a></li>
-                                        <li><a>Georgia</a></li>
+                                        <li ng-repeat="font in FONTS">
+                                            <a ng-click="style.font=font" style="font-family: {{font.style}};">{{font.name}}</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </fieldset>
@@ -81,7 +82,7 @@
                 </div>
                 <div class="span9">
                     <!-- Quiz content-->
-                    <div id="quiz" class="well">
+                    <div id="quiz" class="well" style="font-family: {{style.font.style}};">
                         <div id="name">Name: </div>
                         <div id="directions">
                             This quiz contains {{questions.length;}} questions. Good Luck!
