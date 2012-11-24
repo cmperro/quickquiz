@@ -182,4 +182,15 @@ angular.module('quiz', []).directive('focusOn', function() {
             }).disableSelection();
         }
     };
+}).filter('reorder', function() {
+    return function(oldorder, args) {
+        var C = 2;
+        var R = Math.ceil(oldorder.length / C);
+        var neworder = [];
+        oldorder.forEach(function(value, index) {
+            var newindex = ((index % R) * C) + Math.floor(index / R);
+            neworder[newindex] = value;
+        });
+        return neworder;
+    };
 });
