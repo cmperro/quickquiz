@@ -58,11 +58,11 @@
                                 <legend>Format</legend>
                                 <label>Choices</label>
                                 <div class="btn-group" data-toggle="buttons-radio">
-                                    <button ng-repeat="bullet in BULLET_STYLES"
+                                    <button ng-repeat="(name, bulletForIndex) in BULLET_STYLES"
                                         class="btn"
-                                        ng-bind-html-unsafe="bullet(0)"
-                                        ng-click="style.choices.bullet=bullet"
-                                        ng-class="(style.choices.bullet == bullet) && 'active' || ''">
+                                        ng-bind-html-unsafe="bulletForIndex(0)"
+                                        ng-click="style.choices.bullet=name"
+                                        ng-class="(style.choices.bullet == name) && 'active' || ''">
                                     </button>
                                 </div>
                                 <div class="btn-group">
@@ -101,7 +101,7 @@
                                         ng-mouseleave="showdelete=false;"
                                         ng-repeat="choice in question.choices"
                                         class="choice">
-                                        <span ng-bind-html-unsafe="style.choices.bullet($index)"></span>
+                                        <span ng-bind-html-unsafe="BULLET_STYLES[style.choices.bullet]($index)"></span>
                                         <span editable ng-model="question.choices[$index]"></span>
                                         <i class="icon-remove" ng-show="showdelete" ng-click="removeChoice(question, $index);"></i>
                                     </div>

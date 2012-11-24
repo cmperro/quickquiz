@@ -8,6 +8,9 @@ function QuestionControl($scope) {
         number: function(index) {
             return (index+1) + '.';
         },
+        letter: function(index) {
+            return String.fromCharCode('A'.charCodeAt() + index) + '.';
+        },
         square: function() { return '\u25A1'; },
     };
 
@@ -31,7 +34,7 @@ function QuestionControl($scope) {
     $scope.style = {
         font: $scope.FONTS[1],
         choices: {
-            bullet: $scope.BULLET_STYLES.number
+            bullet: 'circle'
         }
     };
 
@@ -54,7 +57,15 @@ function QuestionControl($scope) {
         });
     };
 
-
+    ['questions', 'style'].forEach(function(variable) {
+        var key = 'QuicklyQuiz.' + variable;
+        if (localStorage[key]) {
+            $scope[variable] = JSON.parse(localStorage[key]);
+        }
+        $scope.$watch(variable, function(newValue) {
+            localStorage[key] = JSON.stringify(newValue);
+        }, true);
+    });
 }
 
 function QuestionEditorControl($scope) {
@@ -185,7 +196,6 @@ angular.module('quiz', []).directive('sortable', function() {
         require: 'ngModel',
         link: function(scope, element, attrs) {
             scope.$watch(attrs.ngModel, function() {
-                console.log('changed');
                 $timeout(function(){
                     // Layout into columns
                     left = $('<div>').attr({
@@ -209,7 +219,6 @@ angular.module('quiz', []).directive('sortable', function() {
                     if (columns.hasClass('ui-sortable')) {
                         console.log("Found sortable");
                     }
-                    console.log("column class match", $('.' + COLUMN_CLASS));
                     columns.sortable({
                         connectWith: '.' + COLUMN_CLASS,
                         start: function(event, ui) {
@@ -234,4 +243,3 @@ angular.module('quiz', []).directive('sortable', function() {
         }
     };
 });
-
