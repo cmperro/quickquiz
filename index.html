@@ -87,8 +87,8 @@
                         <div id="directions">
                             This quiz contains {{questions.length;}} questions. Good Luck!
                         </div>
-                        <div class="questions" ng-model="questions" sortable>
-                            <div ng-repeat="question in questions" class="question">
+                        <ul class="questions" ng-model="questions" sortable>
+                            <li ng-repeat="question in questions" class="question">
                                 <span ng-mouseenter="showquestioneditor=true;"
                                     ng-mouseleave="showquestioneditor=false;">
                                     <span>{{$index + 1}}.</span>
@@ -106,8 +106,10 @@
                                         <i class="icon-remove" ng-show="showdelete" ng-click="removeChoice(question, $index);"></i>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
+                            </li>
+                        </ul>
+                        <!-- Needed for the list to space correctly -->
+                        <br class="clear" />
                     </div>
                 </div>
             </div>

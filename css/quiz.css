@@ -18,12 +18,18 @@ body {
     padding-top: 10px;
 }
 
-.question {
-    padding-top: 10px;
-}
-
 .questions {
     height: 100%;
+    width: 100%;
+    list-style-type: none;
+}
+
+.question {
+    padding-top: 10px;
+    float: left;
+
+    /* Modify width for columns, if it's too big then dnd breaks */
+    width: 48%;
 }
 
 .column {
@@ -32,4 +38,8 @@ body {
 
 .choice {
     text-indent: 15px;
+}
+
+.clear {
+    clear: both;
 }

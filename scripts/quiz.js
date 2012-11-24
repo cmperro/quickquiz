@@ -173,7 +173,7 @@ angular.module('quiz', []).directive('focusOn', function() {
                         end = ui.item.index();
 
                     scope.$apply(function() {
-                        //Swap elements at index start and end
+                        //Swap elements at the start and end indicies.
                         var temp = model[start];
                         model[start] = model[end];
                         model[end] = temp;
