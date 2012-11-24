@@ -57,6 +57,7 @@ function QuestionControl($scope) {
         });
     };
 
+    // Handle persistence across refresh, by saving models to local storage as JSON.
     ['questions', 'style'].forEach(function(variable) {
         var key = 'QuicklyQuiz.' + variable;
         if (localStorage[key]) {
@@ -113,39 +114,7 @@ Array.prototype.shuffle = function () {
   return this;
 };
 
-angular.module('quiz', []).directive('sortable', function() {
-    return {
-        restrict: 'A',
-        require: 'ngModel',
-        link: function(scope, iElement, iAttrs) {
-            var model = scope.$eval(iAttrs.ngModel);
-            var start, end, changed;
-            changed = false;
-            console.log(iAttrs.sortable, iElement.find(iAttrs.sortable));
-            iElement.find(iAttrs.sortable).sortable({
-                connectWith: iAttrs.sortable,
-                start: function(event, ui) {
-                    start = ui.item.index();
-                },
-                update: function() {
-                    changed = true;
-                },
-                stop: function(event, ui) {
-                    end = ui.item.index();
-                    if (changed) {
-                        scope.$apply(function() {
-                            // Swap elements at index start and end
-                            var temp = model[start];
-                            model[start] = model[end];
-                            model[end] = temp;
-                        });
-                    }
-                    changed = false;
-                }
-            });
-        }
-    };
-}).directive('focusOn', function() {
+angular.module('quiz', []).directive('focusOn', function() {
     return {
         restrict: 'A',
         link: function(scope, iElement, iAttrs) {
@@ -189,57 +158,28 @@ angular.module('quiz', []).directive('sortable', function() {
             });
         }
     };
-}).directive('columnize', function($timeout) {
-    var COLUMN_CLASS = 'column';
+}).directive('sortable', function() {
     return {
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs) {
-            scope.$watch(attrs.ngModel, function() {
-                $timeout(function(){
-                    // Layout into columns
-                    left = $('<div>').attr({
-                        style: "width:50%;float:left",
-                        class: COLUMN_CLASS
-                    });
-                    var right = left.clone();
-                    element.children().each(function(index, child) {
-                        if (index % 2 === 0) {
-                            left.append($(child));
-                        }
-                    });
-                    right.append(element.children());
-                    var columns = $(left).add(right);
-                    element.append(columns);
+            var model = scope.$eval(attrs.ngModel);
+            element.sortable({
+                start: function(event, ui) {
+                    ui.item.data('start', ui.item.index());
+                },
+                update: function(event, ui) {
+                    var start = ui.item.data('start'),
+                        end = ui.item.index();
 
-                    // Implement DnD, model updating sorting
-                    var model = scope.$eval(attrs.ngModel);
-                    var start, end, changed;
-                    changed = false;
-                    if (columns.hasClass('ui-sortable')) {
-                        console.log("Found sortable");
-                    }
-                    columns.sortable({
-                        connectWith: '.' + COLUMN_CLASS,
-                        start: function(event, ui) {
-                            start = ui.item.index();
-                        },
-                        update: function() {
-                            changed = true;
-                        },
-                        stop: function(event, ui) {
-                            end = ui.item.index();
-                            if (changed) {
-                                //Swap elements at index start and end
-                                var temp = model[start];
-                                model[start] = model[end];
-                                model[end] = temp;
-                            }
-                            changed = false;
-                        }
-                    }).disableSelection();
-                },0);
-            });
+                    scope.$apply(function() {
+                        //Swap elements at index start and end
+                        var temp = model[start];
+                        model[start] = model[end];
+                        model[end] = temp;
+                    });
+                }
+            }).disableSelection();
         }
     };
 });

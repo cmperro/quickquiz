@@ -87,7 +87,7 @@
                         <div id="directions">
                             This quiz contains {{questions.length;}} questions. Good Luck!
                         </div>
-                        <div class="questions" ng-model="questions" columnize>
+                        <div class="questions" ng-model="questions" sortable>
                             <div ng-repeat="question in questions" class="question">
                                 <span ng-mouseenter="showquestioneditor=true;"
                                     ng-mouseleave="showquestioneditor=false;">
@@ -95,7 +95,7 @@
                                     <span editable ng-model="question.text"></span>
                                     <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
                                 </span>
-                                <div class="choices" ng-model="question.choices">
+                                <div class="choices" ng-model="question.choices" sortable>
                                     <div ng-init="showdelete=false;"
                                         ng-mouseenter="showdelete=true;"
                                         ng-mouseleave="showdelete=false;"
