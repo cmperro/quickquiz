@@ -98,7 +98,9 @@
                         </div>
                         <ul class="questions" ng-model="questions" sortable>
                             <!--<li ng-repeat="question in questions" class="question">-->
-                            <li ng-repeat="question in questions | reorder:ordering.data" class="question">
+                            <li ng-repeat="question in questions | reorder:ordering.data"
+                                class = "question"
+                                ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
                                 <span ng-mouseenter="showquestioneditor=true;"
                                     ng-mouseleave="showquestioneditor=false;">
                                     <span>{{ordering.index(2, $index) + 1}}.</span>
@@ -106,11 +108,11 @@
                                     <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
                                 </span>
                                 <div class="choices" ng-model="question.choices" sortable>
-                                    <div ng-init="showdelete=false;"
-                                        ng-mouseenter="showdelete=true;"
-                                        ng-mouseleave="showdelete=false;"
-                                        ng-repeat="choice in question.choices"
-                                        class="choice">
+                                    <div ng-repeat="choice in question.choices"
+                                         ng-init="showdelete=false;"
+                                         ng-mouseenter="showdelete=true;"
+                                         ng-mouseleave="showdelete=false;"
+                                         class="choice">
                                         <span ng-bind-html-unsafe="BULLET_STYLES[style.choices.bullet]($index)"></span>
                                         <span editable ng-model="question.choices[$index]"></span>
                                         <i class="icon-remove" ng-show="showdelete" ng-click="removeChoice(question, $index);"></i>

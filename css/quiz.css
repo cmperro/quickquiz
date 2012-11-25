@@ -29,7 +29,7 @@ body {
     float: left;
 
     /* Modify width for columns, if it's too big then dnd breaks */
-    width: 48%;
+    width: 45%;
 }
 
 .column {
@@ -45,5 +45,7 @@ body {
 }
 
 .placeholder {
-    display: none;
+    color: #DDD;
+    background-color: #DDD;
+    border-radius: 4px;
 }

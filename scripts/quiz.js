@@ -44,6 +44,13 @@ function QuestionControl($scope) {
         }
     };
 
+    // Used during DnD of questions. This is the model of the palceholder
+    // object as the user drags the question around.
+    $scope.QUESTION_PLACEHOLDER = {
+        text: 'PLACEHOLDER',
+        choices: ['PLACEHOLDER', 'PLACEHOLDER', 'PLACEHOLDER']
+    };
+
     $scope.questions = [
         {text: 'Is the world round?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
@@ -141,6 +148,18 @@ Array.prototype.shuffle = function () {
   return this;
 };
 
+// http://stackoverflow.com/questions/3954438/remove-item-from-array-by-value
+Array.prototype.remove = function() {
+    var what, a = arguments, L = a.length, ax;
+    while (L && this.length) {
+        what = a[--L];
+        while ((ax = this.indexOf(what)) !== -1) {
+            this.splice(ax,1 );
+        }
+    }
+    return this;
+};
+
 angular.module('quiz', []).directive('focusOn', function() {
     return {
         restrict: 'A',
@@ -190,28 +209,49 @@ angular.module('quiz', []).directive('focusOn', function() {
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, element, attrs) {
+
+            function getModelIndex(ui) {
+                var index = ui.placeholder.index();
+                if (index > ui.item.data('start')) {
+                    index -= 1;
+                }
+                return scope.ordering.index(2, index);
+            }
+
             var model = scope.$eval(attrs.ngModel);
+            var draggedModelObject = null;
+            var placeholder = '';
+            if (scope.questions === model) {
+                placeholder = scope.QUESTION_PLACEHOLDER;
+            }
+
             element.sortable({
+                // Options
+                appendTo: document.body,
+                distance: 5,
+                forceHelperSize: true,
+                forcePlaceholderSize: false,
+                helper: 'clone',
                 placeholder: 'placeholder',
+
+                // Events
                 start: function(event, ui) {
                     ui.item.data('start', ui.item.index());
-                    //ui.placeholder.height(2);
+                    scope.$apply(function() {
+                        draggedModelObject = model.splice(getModelIndex(ui), 1, placeholder)[0];
+                    });
+                },
+                change: function(event, ui) {
+                    var modelIndex = getModelIndex(ui);
+                    scope.$apply(function() {
+                        model.remove(placeholder);
+                        model.splice(modelIndex, 0, placeholder);
+                    });
                 },
                 stop: function(event, ui) {
-                    var start = ui.item.data('start'),
-                        end = ui.item.index();
-
-                    // Don't let jquery do any dom manipulation
-                    // Angular will take care of the DOM.
-                    $(this).sortable('cancel');
-
-                    //Swap remove the element at the start and push it into the end index
                     scope.$apply(function() {
-                        if (scope.questions === model) {
-                            start = scope.ordering.index(2, start);
-                            end = scope.ordering.index(2, end);
-                        }
-                        model.splice(end, 0, model.splice(start, 1)[0]);
+                        var modelIndex = model.indexOf(placeholder);
+                        model.splice(modelIndex, 1, draggedModelObject);
                     });
                 }
             }).disableSelection();
