@@ -76,6 +76,15 @@
                                         </li>
                                     </ul>
                                 </div>
+                                <label>Question Order</label>
+                                <div class="btn-group" data-toggle="buttons-radio">
+                                    <button ng-repeat="(name, order) in ORDERINGS"
+                                        class="btn"
+                                        ng-bind="name"
+                                        ng-click="ordering=order"
+                                        ng-class="(ordering == order) && 'active' || ''">
+                                    </button>
+                                </div>
                             </fieldset>
                         </form>
                     </div>
@@ -88,10 +97,11 @@
                             This quiz contains {{questions.length;}} questions. Good Luck!
                         </div>
                         <ul class="questions" ng-model="questions" sortable>
-                            <li ng-repeat="question in questions | reorder" class="question">
+                            <!--<li ng-repeat="question in questions" class="question">-->
+                            <li ng-repeat="question in questions | reorder:ordering.data" class="question">
                                 <span ng-mouseenter="showquestioneditor=true;"
                                     ng-mouseleave="showquestioneditor=false;">
-                                    <span>{{$index + 1}}.</span>
+                                    <span>{{ordering.index(2, $index) + 1}}.</span>
                                     <span editable ng-model="question.text"></span>
                                     <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
                                 </span>

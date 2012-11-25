@@ -43,3 +43,7 @@ body {
 .clear {
     clear: both;
 }
+
+.placeholder {
+    display: none;
+}

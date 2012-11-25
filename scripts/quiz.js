@@ -20,6 +20,30 @@ function QuestionControl($scope) {
         {name: "Georgia", style: 'Georgia, Serif'},
     ];
 
+    $scope.ORDERINGS = {
+        across: {
+            data: function(columns, index) {
+                return index;
+            },
+            index: function(columns, index) {
+                return index;
+            }
+        },
+        down: {
+            data: function(columns, index) {
+                var rows = Math.ceil($scope.questions.length / columns);
+                var newIndex = ((index % rows) * columns) + Math.floor(index / rows);
+                return newIndex;
+            },
+            index: function(columns, index) {
+                var rows = Math.ceil($scope.questions.length / columns);
+                var offset = index % columns;
+                var newIndex = (rows*offset) + ((index-offset)/columns);
+                return newIndex;
+            }
+        }
+    };
+
     $scope.questions = [
         {text: 'Is the world round?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
@@ -31,16 +55,14 @@ function QuestionControl($scope) {
         {text: 'Favorite animal?', choices: ['Cat', 'Dog', 'Elephant' ]}
     ];
 
+    $scope.ordering = $scope.ORDERINGS.down;
+
     $scope.style = {
         font: $scope.FONTS[1],
         choices: {
             bullet: 'circle'
         }
     };
-
-    $scope.$on(ADD_QUESTION, function (event, newQuestion) {
-        $scope.questions.push(newQuestion);
-    });
 
     $scope.removeQuestion = function(question) {
         var index = $scope.questions.indexOf(question);
@@ -56,6 +78,11 @@ function QuestionControl($scope) {
             question.choices.shuffle();
         });
     };
+
+    $scope.$on(ADD_QUESTION, function (event, newQuestion) {
+        $scope.questions.push(newQuestion);
+    });
+
 
     // Handle persistence across refresh, by saving models to local storage as JSON.
     ['questions', 'style'].forEach(function(variable) {
@@ -165,31 +192,36 @@ angular.module('quiz', []).directive('focusOn', function() {
         link: function(scope, element, attrs) {
             var model = scope.$eval(attrs.ngModel);
             element.sortable({
+                placeholder: 'placeholder',
                 start: function(event, ui) {
                     ui.item.data('start', ui.item.index());
+                    //ui.placeholder.height(2);
                 },
-                update: function(event, ui) {
+                stop: function(event, ui) {
                     var start = ui.item.data('start'),
                         end = ui.item.index();
 
+                    // Don't let jquery do any dom manipulation
+                    // Angular will take care of the DOM.
+                    $(this).sortable('cancel');
+
+                    //Swap remove the element at the start and push it into the end index
                     scope.$apply(function() {
-                        //Swap elements at the start and end indicies.
-                        var temp = model[start];
-                        model[start] = model[end];
-                        model[end] = temp;
+                        if (scope.questions === model) {
+                            start = scope.ordering.index(2, start);
+                            end = scope.ordering.index(2, end);
+                        }
+                        model.splice(end, 0, model.splice(start, 1)[0]);
                     });
                 }
             }).disableSelection();
         }
     };
 }).filter('reorder', function() {
-    return function(oldorder, args) {
-        var C = 2;
-        var R = Math.ceil(oldorder.length / C);
+    return function(oldorder, orderingFunction, $scope) {
         var neworder = [];
         oldorder.forEach(function(value, index) {
-            var newindex = ((index % R) * C) + Math.floor(index / R);
-            neworder[newindex] = value;
+            neworder[orderingFunction(2, index)] = value;
         });
         return neworder;
     };
