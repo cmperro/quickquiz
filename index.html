@@ -81,8 +81,8 @@
                                     <button ng-repeat="(name, order) in ORDERINGS"
                                         class="btn"
                                         ng-bind="name"
-                                        ng-click="ordering=order"
-                                        ng-class="(ordering == order) && 'active' || ''">
+                                        ng-click="test.data=0"
+                                        ng-class="(_ordering == order) && 'active' || ''">
                                     </button>
                                 </div>
                             </fieldset>
@@ -93,9 +93,7 @@
                     <!-- Quiz content-->
                     <div id="quiz" class="well" style="font-family: {{style.font.style}};">
                         <div id="name">Name: </div>
-                        <div id="directions">
-                            This quiz contains {{questions.length;}} questions. Good Luck!
-                        </div>
+                        <div id="directions" ng-model="directions" editable></div>
                         <ul class="questions" ng-model="questions"
                             sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index">
                             <!--<li ng-repeat="question in questions" class="question">-->

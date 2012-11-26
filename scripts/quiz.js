@@ -53,6 +53,9 @@ function QuestionControl($scope) {
 
     $scope.CHOICE_PLACEHOLDER = '';
 
+
+    $scope.directions = 'This quiz contains 9 questions. Good Luck!';
+
     $scope.questions = [
         {text: 'Is the world round?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
@@ -65,25 +68,28 @@ function QuestionControl($scope) {
     ];
 
 
-    // Some weak sause currying here, since I want to be able to swap orderings and columns numbers easily
-    $scope.columns = 2;
-    $scope._ordering = $scope.ORDERINGS.down;
-
-    $scope.ordering = {
-        index: function(index) {
-            return $scope._ordering.index($scope.columns, index);
-        },
-        data: function(index) {
-            return $scope._ordering.data($scope.columns, index);
-        }
-    };
-
     $scope.style = {
+        columns: 2,
         font: $scope.FONTS[1],
         choices: {
             bullet: 'circle'
         }
     };
+
+
+    // Some weak sause currying here, since I want to be able to swap orderings and columns numbers easily
+    $scope.test = {data:3};
+    $scope._ordering = $scope.ORDERINGS.down;
+
+    $scope.ordering = {
+        index: function(index) {
+            return $scope._ordering.index($scope.style.columns, index);
+        },
+        data: function(index) {
+            return $scope._ordering.data($scope.style.columns, index);
+        }
+    };
+
 
     $scope.removeQuestion = function(question) {
         var index = $scope.questions.indexOf(question);
@@ -106,13 +112,25 @@ function QuestionControl($scope) {
 
 
     // Handle persistence across refresh, by saving models to local storage as JSON.
-    ['questions', 'style'].forEach(function(variable) {
+    ['questions', 'style', 'directions'].forEach(function(variable) {
         var key = 'QuicklyQuiz.' + variable;
         if (localStorage[key]) {
-            $scope[variable] = JSON.parse(localStorage[key]);
+            var locallyStored = JSON.parse(localStorage[key]);
+            if (stringType(locallyStored) === '[object Object]') {
+                overlay($scope[variable], locallyStored);
+            } else {
+                $scope[variable] = locallyStored;
+            }
+            console.log("LOADED", variable, $scope[variable]);
         }
         $scope.$watch(variable, function(newValue) {
             localStorage[key] = JSON.stringify(newValue);
+        }, true);
+    });
+
+    ['test', 'ordering', '_ordering', 'style.choices.bullet', 'style.columns'].forEach(function(variable) {
+        $scope.$watch(variable, function(newValue) {
+            //console.log("CHANGED: ", variable, "=", newValue);
         }, true);
     });
 }
@@ -144,6 +162,38 @@ function QuestionEditorControl($scope) {
                      {text: $scope.questionText, choices: $scope.choices});
         reset();
     };
+}
+
+
+function stringType(obj) {
+    return Object.prototype.toString.call(obj);
+}
+
+function overlay(bottom, top) {
+    $.each(top, function(key, topValue) {
+        var type = stringType(topValue);
+
+        if (bottom[key]) {
+            var bottomValue = bottom[key];
+
+            // Only used for error checking, should really be equal to type
+            var bottomType = stringType(bottomValue);
+            if (type !== bottomType) {
+                throw {error: 'Type mismatch in loading [' + key + ']. Bottom: ' + bottomType + ' Top: ' + topType};
+            }
+
+            if (type === '[object Object]') {
+                // Associative array, recurse
+                overlay(bottomValue, topValue);
+            } else {
+                // Assume that if it's anything else, we can just copy over
+                bottom[key] = topValue;
+            }
+        } else {
+            bottom[key] = topValue;
+        }
+    });
+    return bottom;
 }
 
 // Procured from: http://stackoverflow.com/questions/2450954/how-to-randomize-a-javascript-array
