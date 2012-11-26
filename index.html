@@ -96,18 +96,21 @@
                         <div id="directions">
                             This quiz contains {{questions.length;}} questions. Good Luck!
                         </div>
-                        <ul class="questions" ng-model="questions" sortable>
+                        <ul class="questions" ng-model="questions"
+                            sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index">
                             <!--<li ng-repeat="question in questions" class="question">-->
                             <li ng-repeat="question in questions | reorder:ordering.data"
                                 class = "question"
                                 ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
                                 <span ng-mouseenter="showquestioneditor=true;"
                                     ng-mouseleave="showquestioneditor=false;">
-                                    <span>{{ordering.index(2, $index) + 1}}.</span>
+                                    <span>{{ordering.index($index) + 1}}.</span>
                                     <span editable ng-model="question.text"></span>
                                     <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
                                 </span>
-                                <div class="choices" ng-model="question.choices" sortable>
+                                <div class="choices"
+                                    ng-model="question.choices"
+                                    sortable placeholder="CHOICE_PLACEHOLDER">
                                     <div ng-repeat="choice in question.choices"
                                          ng-init="showdelete=false;"
                                          ng-mouseenter="showdelete=true;"

@@ -51,6 +51,8 @@ function QuestionControl($scope) {
         choices: ['PLACEHOLDER', 'PLACEHOLDER', 'PLACEHOLDER']
     };
 
+    $scope.CHOICE_PLACEHOLDER = '';
+
     $scope.questions = [
         {text: 'Is the world round?', choices: ['Yes', 'No', 'Maybe' ]},
         {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
@@ -62,7 +64,19 @@ function QuestionControl($scope) {
         {text: 'Favorite animal?', choices: ['Cat', 'Dog', 'Elephant' ]}
     ];
 
-    $scope.ordering = $scope.ORDERINGS.down;
+
+    // Some weak sause currying here, since I want to be able to swap orderings and columns numbers easily
+    $scope.columns = 2;
+    $scope._ordering = $scope.ORDERINGS.down;
+
+    $scope.ordering = {
+        index: function(index) {
+            return $scope._ordering.index($scope.columns, index);
+        },
+        data: function(index) {
+            return $scope._ordering.data($scope.columns, index);
+        }
+    };
 
     $scope.style = {
         font: $scope.FONTS[1],
@@ -207,28 +221,28 @@ angular.module('quiz', []).directive('focusOn', function() {
 }).directive('sortable', function() {
     return {
         restrict: 'A',
-        require: 'ngModel',
+        require: ['ngModel'],
         link: function(scope, element, attrs) {
 
+            var model = scope.$eval(attrs.ngModel);
+            var placeholder = scope.$eval(attrs.placeholder);
+            var indexMapper = attrs.indexMapper ? scope.$eval(attrs.indexMapper) : function(i) { return i; };
+
+            // Used to map between indicies
             function getModelIndex(ui) {
                 var index = ui.placeholder.index();
                 if (index > ui.item.data('start')) {
                     index -= 1;
                 }
-                return scope.ordering.index(2, index);
+                return indexMapper(index);
             }
 
-            var model = scope.$eval(attrs.ngModel);
+            // Holds the model object that the dragged element represents
             var draggedModelObject = null;
-            var placeholder = '';
-            if (scope.questions === model) {
-                placeholder = scope.QUESTION_PLACEHOLDER;
-            }
 
             element.sortable({
                 // Options
                 appendTo: document.body,
-                distance: 5,
                 forceHelperSize: true,
                 forcePlaceholderSize: false,
                 helper: 'clone',
@@ -261,7 +275,7 @@ angular.module('quiz', []).directive('focusOn', function() {
     return function(oldorder, orderingFunction, $scope) {
         var neworder = [];
         oldorder.forEach(function(value, index) {
-            neworder[orderingFunction(2, index)] = value;
+            neworder[orderingFunction(index)] = value;
         });
         return neworder;
     };
