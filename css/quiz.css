@@ -3,11 +3,12 @@ body {
 }
 
 #quiz {
-    color: black;
-    width: 8.5in;
-    height: 11in;
     background-color: white;
     border: 1px solid black;
+    color: black;
+    height: 11in;
+    overflow: hidden;
+    width: 8.5in;
 }
 
 #name {
