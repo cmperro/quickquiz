@@ -69,6 +69,7 @@ function QuestionControl($scope) {
 
 
     $scope.style = {
+        ordering: $scope.ORDERINGS.down,
         columns: 2,
         font: $scope.FONTS[1],
         choices: {
@@ -78,15 +79,13 @@ function QuestionControl($scope) {
 
 
     // Some weak sause currying here, since I want to be able to swap orderings and columns numbers easily
-    $scope.test = {data:3};
-    $scope._ordering = $scope.ORDERINGS.down;
 
     $scope.ordering = {
         index: function(index) {
-            return $scope._ordering.index($scope.style.columns, index);
+            return $scope.style.ordering.index($scope.style.columns, index);
         },
         data: function(index) {
-            return $scope._ordering.data($scope.style.columns, index);
+            return $scope.style.ordering.data($scope.style.columns, index);
         }
     };
 
@@ -128,7 +127,7 @@ function QuestionControl($scope) {
         }, true);
     });
 
-    ['test', 'ordering', '_ordering', 'style.choices.bullet', 'style.columns'].forEach(function(variable) {
+    ['test', 'ordering', 'style.choices.bullet', 'style.columns'].forEach(function(variable) {
         $scope.$watch(variable, function(newValue) {
             //console.log("CHANGED: ", variable, "=", newValue);
         }, true);

@@ -81,8 +81,8 @@
                                     <button ng-repeat="(name, order) in ORDERINGS"
                                         class="btn"
                                         ng-bind="name"
-                                        ng-click="test.data=0"
-                                        ng-class="(_ordering == order) && 'active' || ''">
+                                        ng-click="style.ordering=order"
+                                        ng-class="(style.ordering == order) && 'active' || ''">
                                     </button>
                                 </div>
                             </fieldset>
