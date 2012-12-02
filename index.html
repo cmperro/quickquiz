@@ -110,15 +110,15 @@
                                     ng-model="question.choices"
                                     sortable placeholder="CHOICE_PLACEHOLDER">
                                     <div ng-repeat="choice in question.choices"
-                                         ng-init="showdelete=false;"
-                                         ng-mouseenter="showdelete=true;"
-                                         ng-mouseleave="showdelete=false;"
+                                         ng-init="showeditor=false;"
+                                         ng-mouseenter="showeditor=true;"
+                                         ng-mouseleave="showeditor=false;"
                                          class="choice">
                                          <span class="choice-bullet"
                                              ng-bind-html-unsafe="BULLET_STYLES[style.choices.bullet]($index)">
                                          </span>
                                         <span editable ng-model="question.choices[$index]"></span>
-                                        <i class="icon-remove" ng-show="showdelete" ng-click="removeChoice(question, $index);"></i>
+                                        <i class="icon-remove" ng-show="showeditor" ng-click="removeChoice(question, $index);"></i>
                                     </div>
                                 </div>
                             </li>
