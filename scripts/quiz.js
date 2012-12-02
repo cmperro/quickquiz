@@ -330,7 +330,6 @@ angular.module('quiz', []).directive('focusOn', function() {
         require: ['ngModel'],
         link: function(scope, element, attrs) {
             scope.$watch(attrs.ngModel, function() {
-                console.log('fffiirrreee');
                 $timeout(function() {
                     element.children().each(function(childIndex) {
                         if (childIndex % 2 === 0) {
