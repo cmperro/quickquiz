@@ -239,6 +239,8 @@ angular.module('quiz', []).directive('focusOn', function() {
         require: 'ngModel',
         link: function(scope, plainDOM, iAttrs, ngModel) {
 
+            plainDOM.addClass('editable');
+
             // Setup the display
             var display = $('<span></span>');
             display.text(ngModel.$modelValue);
@@ -263,7 +265,7 @@ angular.module('quiz', []).directive('focusOn', function() {
             plainDOM.append(editor);
 
             scope.$watch(iAttrs.ngModel, function() {
-                display.text(ngModel.$viewValue || '');
+                display.text(ngModel.$viewValue || '\xa0');
             });
         }
     };
