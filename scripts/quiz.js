@@ -78,7 +78,7 @@ function QuestionControl($scope) {
     };
 
 
-    // Some weak sause currying here, since I want to be able to swap orderings and columns numbers easily
+    // Some weak sauce currying here, since I want to be able to swap orderings and columns numbers easily
 
     $scope.ordering = {
         index: function(index) {
@@ -267,7 +267,7 @@ angular.module('quiz', []).directive('focusOn', function() {
             });
         }
     };
-}).directive('sortable', function() {
+}).directive('sortable', function($timeout) {
     return {
         restrict: 'A',
         require: ['ngModel'],
@@ -278,13 +278,13 @@ angular.module('quiz', []).directive('focusOn', function() {
             var indexMapper = attrs.indexMapper ? scope.$eval(attrs.indexMapper) : function(i) { return i; };
 
             // Used to map between indicies
-            function getModelIndex(ui) {
+            var getModelIndex = function(ui) {
                 var index = ui.placeholder.index();
                 if (index > ui.item.data('start')) {
                     index -= 1;
                 }
                 return indexMapper(index);
-            }
+            };
 
             // Holds the model object that the dragged element represents
             var draggedModelObject = null;
@@ -318,6 +318,35 @@ angular.module('quiz', []).directive('focusOn', function() {
                     });
                 }
             }).disableSelection();
+
+        }
+    };
+}).directive('fixedHeights', function($timeout) {
+    // Make sure that the elements are the right size
+    return {
+        restrict: 'A',
+        require: ['ngModel'],
+        link: function(scope, element, attrs) {
+            scope.$watch(attrs.ngModel, function() {
+                console.log('fffiirrreee');
+                $timeout(function() {
+                    element.children().each(function(childIndex) {
+                        if (childIndex % 2 === 0) {
+                            var rowElements = $(this).add($(this).next());
+                            rowElements.css({'height': ''});
+
+                            // Find the tallest element in the set
+                            var height = Math.max.apply(null, rowElements.map(
+                                function(){
+                                    return $(this).height();
+                                }
+                            ));
+
+                            rowElements.height(height);
+                        }
+                    });
+                });
+            }, true);
         }
     };
 }).filter('reorder', function() {
