@@ -95,8 +95,8 @@
                         <div id="name">Name: </div>
                         <div id="directions" ng-model="directions" editable></div>
                         <ul class="questions" ng-model="questions"
-                            sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index">
-                            <!--<li ng-repeat="question in questions" class="question">-->
+                            sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index"
+                            fixed-heights>
                             <li ng-repeat="question in questions | reorder:ordering.data"
                                 class = "question"
                                 ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
