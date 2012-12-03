@@ -395,3 +395,7 @@ angular.module('quiz', []).directive('focusOn', function() {
         return neworder;
     };
 });
+
+$(function() {
+    $('#questionEditor').focus();
+});

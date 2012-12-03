@@ -19,24 +19,41 @@
                 <div class="span3 hide-on-print">
                     <!-- editor sidebar-->
                     <div class="well">
-                        <form ng-submit="addQuestion()" ng-controller="QuestionEditorControl" action="">
+                        <form ng-submit="" ng-controller="QuestionEditorControl" action="">
                             <fieldset>
                                 <legend>Add a Question</legend>
-                                <input type="text" ng-model="questionText" placeholder="Type a question here"
-                                class="input-block-level" >
+                                    <input
+                                        id="questionEditor"
+                                        type="text"
+                                        onkeypress="if (window.event.keyCode === 13){
+                                            $(':input:eq(' + $(':input').index(this) + 1 + ')').focus();
+                                        }"
+                                        ng-model="questionText"
+                                        placeholder="Type a question"
+                                        class="input-block-level">
+                                    </input>
                                 <ol>
                                     <li ng-repeat="choice in choices">
                                         {{choice}}
                                         <i class="icon-remove" ng-click="removeChoice($index);"></i>
                                     </li>
                                     <li style="list-style-type: none;">
-                                    <input type="text" focus-on="ChoiceAddedEvent" ng-model="choiceText" placeholder="Type a choice here" class="input-block-level">
+                                    <input
+                                        type="text"
+                                        focus-on="ChoiceAddedEvent"
+                                        ng-model="choiceText"
+                                        placeholder="Type a choice"
+                                        onkeypress="if (window.event.keyCode === 13){
+                                            angular.element(this).scope().$apply('addChoice()');
+                                        }"
+                                        class="input-block-level">
+                                    </input>
                                         <button type="button" ng-click="addChoice();" class="btn btn-small">
                                             <i class="icon-plus"></i> Add Choice
                                         </button>
                                     </li>
                                 </ol>
-                                <button type="submit" class="btn btn-block btn-primary">Add this question</button>
+                                <button type="button" class="btn btn-block btn-primary" ng-click="addQuestion()">Add this question</button>
                             </fieldset>
                         </form>
                     </div>
@@ -62,7 +79,7 @@
                                         <a href="#" ng-click="clearQuestions();" class="btn btn-danger">Yes, Clear all of the questions</a>
                                     </div>
                                 </div>
-                                <a href="#clearQuestionsModel" class="btn btn-block btn-danger" data-toggle="modal">Yes,
+                                <a href="#clearQuestionsModel" class="btn btn-block btn-danger" data-toggle="modal">
                                     Clear all of the questions</a>
                             </fieldset>
                         </form>
