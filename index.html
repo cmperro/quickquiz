@@ -99,26 +99,38 @@
                             fixed-heights>
                             <li ng-repeat="question in questions | reorder:ordering.data"
                                 class = "question"
+                                ng-init="editorFocus = [];"
                                 ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
-                                <div ng-mouseenter="showquestioneditor=true;"
-                                    ng-mouseleave="showquestioneditor=false;">
+                                <div ng-mouseenter="showQuestionEditor=true;"
+                                    ng-mouseleave="showQuestionEditor=false;">
                                     <span>{{ordering.index($index) + 1}}.</span>
                                     <span editable ng-model="question.text"></span>
-                                    <i class="icon-remove" ng-show="showquestioneditor" ng-click="removeQuestion(question);"></i>
+                                    <span ng-show="showQuestionEditor">
+                                        <i class="icon-remove" ng-click="removeQuestion(question);"></i>
+                                        <i class="icon-plus" ng-click="addChoice(question, 0); editorFocus[0] = true;"></i>
+                                    </span>
                                 </div>
                                 <div class="choices"
                                     ng-model="question.choices"
                                     sortable placeholder="CHOICE_PLACEHOLDER">
                                     <div ng-repeat="choice in question.choices"
-                                         ng-init="showeditor=false;"
-                                         ng-mouseenter="showeditor=true;"
-                                         ng-mouseleave="showeditor=false;"
+                                         ng-init="showChoiceEditor=false;"
+                                         ng-mouseenter="showChoiceEditor=true;"
+                                         ng-mouseleave="showChoiceEditor=false;"
                                          class="choice">
-                                         <span class="choice-bullet"
-                                             ng-bind-html-unsafe="BULLET_STYLES[style.choices.bullet]($index)">
-                                         </span>
-                                        <span editable ng-model="question.choices[$index]"></span>
-                                        <i class="icon-remove" ng-show="showeditor" ng-click="removeChoice(question, $index);"></i>
+                                        <span class="choice-bullet"
+                                            ng-bind-html-unsafe="BULLET_STYLES[style.choices.bullet]($index)">
+                                        </span>
+                                        <span editable
+                                              editable-on="editorFocus[$index]"
+                                              editable-done="editorFocus[$index] = false"
+                                              ng-model="question.choices[$index]">
+                                        </span>
+                                        <span ng-show="showChoiceEditor">
+                                            <i class="icon-remove" ng-click="removeChoice(question, $index);"></i>
+                                            <i class="icon-plus" ng-click="addChoice(question, $index + 1);
+                                                editorFocus[$index + 1] = true;"></i>
+                                        </span>
                                     </div>
                                 </div>
                             </li>
