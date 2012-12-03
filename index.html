@@ -36,7 +36,34 @@
                                         </button>
                                     </li>
                                 </ol>
-                                <button type="submit" class="btn btn-block btn-primary">Add Question</button>
+                                <button type="submit" class="btn btn-block btn-primary">Add this question</button>
+                            </fieldset>
+                        </form>
+                    </div>
+                    <div class="well">
+                        <form action="">
+                            <fieldset>
+                                <legend>Clear All Questions</legend>
+                                <span class="help-block">Clears away all of the questions in this quiz.<em>This action cannot be undone.</em></span>
+                                <div id="clearQuestionsModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModelLabel" aria-hidden="true">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal"
+                                            aria-hidden="true">x</button>
+                                        <h3>Really delete all questions?</h3>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p>
+                                            Are you sure that you want to delete all of the questions in your quiz? This
+                                            cannot be undone.
+                                        </p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <a href="#" class="btn" data-dismiss="modal">No, Do not clear the questions</a>
+                                        <a href="#" ng-click="clearQuestions();" class="btn btn-danger">Yes, Clear all of the questions</a>
+                                    </div>
+                                </div>
+                                <a href="#clearQuestionsModel" class="btn btn-block btn-danger" data-toggle="modal">Yes,
+                                    Clear all of the questions</a>
                             </fieldset>
                         </form>
                     </div>
@@ -47,7 +74,7 @@
                                 <span class="help-block">Randomly shuffle the order of the answers to your
                                     questions.</span>
                                 <button type="button" ng-click="shuffleChoices()" class="btn btn-block btn-primary">
-                                    Shuffle all of the Answers
+                                    Shuffle all of the answers
                                 </button>
                             </fieldset>
                         </form>
