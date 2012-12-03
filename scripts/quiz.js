@@ -112,6 +112,10 @@ function QuestionControl($scope) {
         });
     };
 
+    $scope.clearQuestions = function () {
+        $scope.questions = [];
+    };
+
     $scope.$on(ADD_QUESTION, function (event, newQuestion) {
         $scope.questions.push(newQuestion);
     });
@@ -167,6 +171,7 @@ function QuestionEditorControl($scope) {
                      {text: $scope.questionText, choices: $scope.choices});
         reset();
     };
+
 }
 
 
