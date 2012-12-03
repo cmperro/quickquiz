@@ -1,6 +1,9 @@
 var ADD_QUESTION = 'ADD_QUESTION';
+var REQUEST_EDIT = 'EDIT';
 
 function QuestionControl($scope) {
+    $scope.EDIT = REQUEST_EDIT;
+
     $scope.BULLET_STYLES = {
         // http://en.wikipedia.org/wiki/Unicode_Geometric_Shapes
         circle: function() { return '\u25EF'; },
@@ -99,16 +102,23 @@ function QuestionControl($scope) {
         question.choices.splice(index, 1);
     };
 
+    $scope.addChoice = function(question, index) {
+        question.choices.splice(index, 0, '');
+    };
+
     $scope.shuffleChoices = function() {
         angular.forEach($scope.questions, function(question) {
             question.choices.shuffle();
         });
     };
 
+    $scope.clearQuestions = function () {
+        $scope.questions = [];
+    };
+
     $scope.$on(ADD_QUESTION, function (event, newQuestion) {
         $scope.questions.push(newQuestion);
     });
-
 
     // Handle persistence across refresh, by saving models to local storage as JSON.
     ['questions', 'style', 'directions'].forEach(function(variable) {
@@ -161,6 +171,7 @@ function QuestionEditorControl($scope) {
                      {text: $scope.questionText, choices: $scope.choices});
         reset();
     };
+
 }
 
 
@@ -233,12 +244,21 @@ angular.module('quiz', []).directive('focusOn', function() {
             });
         }
     };
-}).directive('editable', function() {
+}).directive('editable', function($timeout) {
+    var editors = {};
+    function safeApply(scope, func) {
+        if (scope.$$phase !== '$digest') {
+            scope.$apply(function() {
+                func();
+            });
+        } else {
+            func();
+        }
+    }
     return {
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, plainDOM, iAttrs, ngModel) {
-
             plainDOM.addClass('editable');
 
             // Setup the display
@@ -254,19 +274,35 @@ angular.module('quiz', []).directive('focusOn', function() {
             // Setup the editor
             var editor = $('<input type="text" ng-model="'+ iAttrs.ngModel + '"></input>');
             editor.hide();
+            editor.keypress(function(e) {
+                if (e.which === 13) {
+                    switchToDisplayMode();
+                    if (iAttrs.editableDone) {
+                        scope.$eval(iAttrs.editableDone);
+                    }
+                }
+            });
             editor.bind('blur change', switchToDisplayMode);
             function switchToDisplayMode() {
                 editor.hide();
                 display.show();
-                scope.$apply(function() {
+                safeApply(scope, function() {
                     ngModel.$setViewValue(editor.val());
                 });
             }
             plainDOM.append(editor);
 
             scope.$watch(iAttrs.ngModel, function() {
-                display.text(ngModel.$viewValue || '\xa0');
+                display.text(ngModel.$viewValue || '');
             });
+
+            if (iAttrs.editableOn) {
+                scope.$watch(iAttrs.editableOn, function(newVal, oldVal, scope) {
+                    if (newVal) {
+                        switchToEditMode();
+                    }
+                });
+            }
         }
     };
 }).directive('sortable', function($timeout) {
