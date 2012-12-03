@@ -293,7 +293,7 @@ angular.module('quiz', []).directive('focusOn', function() {
             plainDOM.append(editor);
 
             scope.$watch(iAttrs.ngModel, function() {
-                display.text(ngModel.$viewValue || '');
+                display.text(ngModel.$viewValue || '\xa0');
             });
 
             if (iAttrs.editableOn) {
