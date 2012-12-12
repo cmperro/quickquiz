@@ -149,7 +149,7 @@ function QuestionEditorControl($scope) {
     $scope.ChoiceAddedEvent = 'ChoiceAdded';
 
     function reset() {
-        $scope.questionText = '';
+        $scope.questionText = 'Type your question here';
         $scope.choices = [];
         $scope.choiceText = '';
     }
@@ -399,3 +399,7 @@ angular.module('quiz', []).directive('focusOn', function() {
 $(function() {
     $('#questionEditor').focus();
 });
+
+jQuery.fn.nextInput = function() {
+    $(':input:eq(' + $(':input').index(this) + 1 + ')').focus();
+};
