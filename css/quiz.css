@@ -12,6 +12,7 @@ body {
 
 #addAChoiceField {
     width: 100%;
+    margin-top: 7px;
     padding: 0px;
     padding-left: 5px;
 }
