@@ -17,6 +17,11 @@ body {
 
 #directions {
     padding-top: 10px;
+    width: 100%;
+}
+
+#directions > * {
+    width: 100%;
 }
 
 .questions {
