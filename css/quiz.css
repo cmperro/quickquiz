@@ -2,6 +2,18 @@ body {
     background-color: #EEEEEE;
 }
 
+#questionEditor {
+    width: 100%;
+}
+
+#questionEditor > * {
+    width: 100%;
+}
+
+#addAChoiceField {
+    width: 100%;
+}
+
 #quiz {
     background-color: white;
     border: 1px solid black;
