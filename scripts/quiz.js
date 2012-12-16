@@ -259,30 +259,12 @@ angular.module('quiz', []).directive('focusOn', function() {
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, plainDOM, iAttrs, ngModel) {
-            plainDOM.addClass('editable');
 
-            // Setup the display
-            var display = $('<span></span>');
-            display.text(ngModel.$modelValue);
-            display.bind('click', switchToEditMode);
             function switchToEditMode() {
                 editor.val(display.text()).show().focus();
                 display.hide();
             }
-            plainDOM.append(display);
 
-            // Setup the editor
-            var editor = $('<input type="text" ng-model="'+ iAttrs.ngModel + '"></input>');
-            editor.hide();
-            editor.keypress(function(e) {
-                if (e.which === 13) {
-                    switchToDisplayMode();
-                    if (iAttrs.editableDone) {
-                        scope.$eval(iAttrs.editableDone);
-                    }
-                }
-            });
-            editor.bind('blur change', switchToDisplayMode);
             function switchToDisplayMode() {
                 editor.hide();
                 display.show();
@@ -290,6 +272,30 @@ angular.module('quiz', []).directive('focusOn', function() {
                     ngModel.$setViewValue(editor.val());
                 });
             }
+
+            // Used by CSS
+            plainDOM.addClass('editable');
+
+            // Setup the display
+            var display = $('<span ></span>')
+                .text(ngModel.$modelValue)
+                .bind('click', switchToEditMode);
+
+            plainDOM.append(display);
+
+            // Setup the editor
+            var editor = $('<input type="text" ng-model="'+ iAttrs.ngModel + '"></input>')
+                .hide()
+                .bind('blur change', switchToDisplayMode)
+                .keypress(function(e) {
+                    if (e.which === 13) {
+                        switchToDisplayMode();
+                        if (iAttrs.editableDone) {
+                            scope.$eval(iAttrs.editableDone);
+                        }
+                    }
+                });
+
             plainDOM.append(editor);
 
             scope.$watch(iAttrs.ngModel, function() {
