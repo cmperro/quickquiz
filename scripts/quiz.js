@@ -253,7 +253,7 @@ angular.module('quiz', []).directive('focusOn', function() {
 }).directive('editable', function($timeout) {
     var editors = {};
     function safeApply(scope, func) {
-        if (scope.$$phase !== '$digest') {
+        if (scope.$$phase !== '$digest' && scope.$$phase !== '$apply') {
             scope.$apply(function() {
                 func();
             });
@@ -265,19 +265,6 @@ angular.module('quiz', []).directive('focusOn', function() {
         restrict: 'A',
         require: 'ngModel',
         link: function(scope, plainDOM, iAttrs, ngModel) {
-
-            function switchToEditMode() {
-                editor.val(display.text()).show().focus();
-                display.hide();
-            }
-
-            function switchToDisplayMode() {
-                editor.hide();
-                display.show();
-                safeApply(scope, function() {
-                    ngModel.$setViewValue(editor.val());
-                });
-            }
 
             // Used by CSS
             plainDOM.addClass('editable');
@@ -297,6 +284,19 @@ angular.module('quiz', []).directive('focusOn', function() {
                     }
                 });
 
+            function switchToEditMode() {
+                editor.val(display.text()).show().focus();
+                display.hide();
+            }
+
+            function switchToDisplayMode() {
+                editor.hide();
+                display.show();
+                safeApply(scope, function() {
+                    ngModel.$setViewValue(editor.val());
+                });
+            }
+
             plainDOM.append(display);
             plainDOM.append(editor);
 
@@ -304,19 +304,27 @@ angular.module('quiz', []).directive('focusOn', function() {
                 display.text(ngModel.$viewValue);
             });
 
+            function setMode(editMode) {
+                if (editMode) {
+                    switchToEditMode();
+                } else {
+                    switchToDisplayMode();
+                }
+            }
+
             // Figure out when to know to switch between modes
             if (iAttrs.editableOn) {
-                scope.$watch(scope.$eval(iAttrs.editableOn), function(newVal, oldVal, scope) {
-                    if (newVal) {
-                        switchToEditMode();
-                    } else {
-                        switchToDisplayMode();
+                scope.$watch(scope.$eval(iAttrs.editableOn), function(newVal) {
+                    if (typeof newVal !== 'undefined') {
+                        setMode(newVal);
                     }
                 });
+                setMode(scope.$eval(iAttrs.editableOn));
             } else {
                 display.bind('click', switchToEditMode);
                 editor.bind('blur change', switchToDisplayMode);
             }
+
         }
     };
 }).directive('sortable', function($timeout) {
