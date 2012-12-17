@@ -1,5 +1,6 @@
 var ADD_QUESTION = 'ADD_QUESTION';
 var REQUEST_EDIT = 'EDIT';
+var DEFAULT_EDITOR_QUESTION = 'Type your question here';
 
 function QuestionControl($scope) {
     $scope.EDIT = REQUEST_EDIT;
@@ -149,11 +150,16 @@ function QuestionEditorControl($scope) {
     $scope.ChoiceAddedEvent = 'ChoiceAdded';
 
     function reset() {
-        $scope.questionText = 'Type your question here';
+        $scope.questionText = DEFAULT_EDITOR_QUESTION;
         $scope.choices = [];
         $scope.choiceText = '';
     }
     reset();
+
+    $scope.questionEditMode = function () {
+        console.log('testing');
+        return $scope.questionText === DEFAULT_EDITOR_QUESTION;
+    };
 
 
     $scope.addChoice = function ($event) {
@@ -277,16 +283,11 @@ angular.module('quiz', []).directive('focusOn', function() {
             plainDOM.addClass('editable');
 
             // Setup the display
-            var display = $('<span ></span>')
-                .text(ngModel.$modelValue)
-                .bind('click', switchToEditMode);
-
-            plainDOM.append(display);
+            var display = $('<span></span>').text(ngModel.$modelValue);
 
             // Setup the editor
             var editor = $('<input type="text" ng-model="'+ iAttrs.ngModel + '"></input>')
                 .hide()
-                .bind('blur change', switchToDisplayMode)
                 .keypress(function(e) {
                     if (e.which === 13) {
                         switchToDisplayMode();
@@ -296,18 +297,25 @@ angular.module('quiz', []).directive('focusOn', function() {
                     }
                 });
 
+            plainDOM.append(display);
             plainDOM.append(editor);
 
             scope.$watch(iAttrs.ngModel, function() {
-                display.text(ngModel.$viewValue || '\xa0');
+                display.text(ngModel.$viewValue);
             });
 
+            // Figure out when to know to switch between modes
             if (iAttrs.editableOn) {
-                scope.$watch(iAttrs.editableOn, function(newVal, oldVal, scope) {
+                scope.$watch(scope.$eval(iAttrs.editableOn), function(newVal, oldVal, scope) {
                     if (newVal) {
                         switchToEditMode();
+                    } else {
+                        switchToDisplayMode();
                     }
                 });
+            } else {
+                display.bind('click', switchToEditMode);
+                editor.bind('blur change', switchToDisplayMode);
             }
         }
     };

@@ -24,12 +24,11 @@
                                 <legend>Add a Question</legend>
                                     <span editable
                                          ng-init="questionEditor = true"
-                                         editable-on="questionEditor"
-                                         editable-done="questionEditor = false"
+                                         editable-on="false"
                                          ng-model="questionText"
                                          id="questionEditor"
                                          placeholder="Type a question"
-                                         onfocus="$(this).find('input').select();"
+                                         onfocus="$('> input').select();"
                                          onkeypress="if (window.event.keyCode === 13){
                                              $(this).find('input').nextInput();
                                          }">
