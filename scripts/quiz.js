@@ -1,6 +1,6 @@
 var ADD_QUESTION = 'ADD_QUESTION';
 var REQUEST_EDIT = 'EDIT';
-var DEFAULT_EDITOR_QUESTION = 'Type your question here';
+var DEFAULT_EDITOR_QUESTION = '';
 
 function QuestionControl($scope) {
     $scope.EDIT = REQUEST_EDIT;
@@ -157,10 +157,8 @@ function QuestionEditorControl($scope) {
     reset();
 
     $scope.questionEditMode = function () {
-        console.log('testing');
         return $scope.questionText === DEFAULT_EDITOR_QUESTION;
     };
-
 
     $scope.addChoice = function ($event) {
         $scope.choices.push($scope.choiceText);
@@ -270,10 +268,13 @@ angular.module('quiz', []).directive('focusOn', function() {
             plainDOM.addClass('editable');
 
             // Setup the display
-            var display = $('<span></span>').text(ngModel.$modelValue);
+            var display = $('<span>').text(ngModel.$viewValue);
 
             // Setup the editor
-            var editor = $('<input type="text" ng-model="'+ iAttrs.ngModel + '"></input>')
+            var editor = $('<input>')
+                .attr({
+                    'type': 'text',
+                    'placeholder': iAttrs.placeholder || ''})
                 .hide()
                 .keypress(function(e) {
                     if (e.which === 13) {
@@ -285,7 +286,8 @@ angular.module('quiz', []).directive('focusOn', function() {
                 });
 
             function switchToEditMode() {
-                editor.val(display.text()).show().focus();
+                //console.log('here we go', display.text());
+                editor.show().focus();
                 display.hide();
             }
 
@@ -300,8 +302,9 @@ angular.module('quiz', []).directive('focusOn', function() {
             plainDOM.append(display);
             plainDOM.append(editor);
 
-            scope.$watch(iAttrs.ngModel, function() {
-                display.text(ngModel.$viewValue);
+            scope.$watch(iAttrs.ngModel, function(newValue) {
+                display.text(newValue);
+                editor.val(newValue);
             });
 
             function setMode(editMode) {
@@ -313,18 +316,19 @@ angular.module('quiz', []).directive('focusOn', function() {
             }
 
             // Figure out when to know to switch between modes
-            if (iAttrs.editableOn) {
-                scope.$watch(scope.$eval(iAttrs.editableOn), function(newVal) {
+            if (iAttrs.editableWhen) {
+                scope.$watch(iAttrs.editableWhen, function(newVal) {
+                    console.log(newVal);
                     if (typeof newVal !== 'undefined') {
                         setMode(newVal);
                     }
                 });
-                setMode(scope.$eval(iAttrs.editableOn));
+                setMode(scope.$eval(iAttrs.editableWhen));
             } else {
                 display.bind('click', switchToEditMode);
                 editor.bind('blur change', switchToDisplayMode);
+                switchToDisplayMode();
             }
-
         }
     };
 }).directive('sortable', function($timeout) {
@@ -420,6 +424,11 @@ angular.module('quiz', []).directive('focusOn', function() {
 
 $(function() {
     $('#questionEditor').focus();
+    $('#questionEditor > input').blur(function() {
+        angular.element(this.parentNode).scope().$apply(function(scope) {
+            scope.editor = false;
+        });
+    });
 });
 
 jQuery.fn.nextInput = function() {

@@ -22,17 +22,18 @@
                         <form ng-submit="" ng-controller="QuestionEditorControl" action="">
                             <fieldset>
                                 <legend>Add a Question</legend>
-                                    <span editable
-                                         ng-init="questionEditor = true"
-                                         editable-on="questionEditor"
+                                    <div editable
+                                         ng-init="editor = true"
+                                         editable-when="editor || !questionText"
                                          ng-model="questionText"
                                          id="questionEditor"
                                          placeholder="Type a question"
+                                         ng-click="editor = true"
                                          onfocus="$('> input').select();"
                                          onkeypress="if (window.event.keyCode === 13){
                                              $(this).find('input').nextInput();
                                          }">
-                                    </span>
+                                    </div>
                                 <ol>
                                     <li ng-repeat="choice in choices">
                                         {{choice}}
@@ -51,7 +52,7 @@
                                         </input>
                                     </li>
                                 </ol>
-                                <button type="button" class="btn btn-block btn-primary" ng-click="addQuestion()">Add this question</button>
+                                <button type="button" class="btn btn-block btn-primary" ng-click="addQuestion(); editor=true">Add this question</button>
                             </fieldset>
                         </form>
                     </div>
