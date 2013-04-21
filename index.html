@@ -3,14 +3,21 @@
     <head>
         <meta http-equiv="content-type" content="text/html; charset=utf-8">
         <title>Quickly Quiz</title>
+        <!-- Third party APIs-->
+        <script src="js/jquery-1.8.2.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/jquery-ui-1.9.1.custom.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Quickly Quiz Scripts -->
+        <script src="js/quiz.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/controls.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/directives.js" type="text/javascript" charset="utf-8"></script>
+
+        <!-- Style sheets -->
         <link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" charset="utf-8">
         <link rel="stylesheet" href="css/quiz.css" type="text/css" media="all" charset="utf-8">
         <link rel="stylesheet" href="css/printfriendly.css" type="text/css" media="print" charset="utf-8">
-        <script src="scripts/jquery-1.8.2.js" type="text/javascript" charset="utf-8"></script>
-        <script src="scripts/jquery-ui-1.9.1.custom.js" type="text/javascript" charset="utf-8"></script>
-        <script src="scripts/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="scripts/angular.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="scripts/quiz.js" type="text/javascript" charset="utf-8"></script>
     </head>
     <body>
         <h2 id="title">Quickly Quiz!</h2>
@@ -25,7 +32,7 @@
                                     <div editable
                                          ng-init="editor = true"
                                          editable-when="editor || !questionText"
-                                         ng-model="questionText"
+                                         ng-model="question.questionText"
                                          id="questionEditor"
                                          placeholder="Type a question"
                                          ng-click="editor = true"
@@ -35,7 +42,7 @@
                                          }">
                                     </div>
                                 <ol>
-                                    <li ng-repeat="choice in choices">
+                                    <li ng-repeat="choice in question.choices">
                                         {{choice}}
                                         <i class="icon-remove" ng-click="removeChoice($index);"></i>
                                     </li>
