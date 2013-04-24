@@ -3,6 +3,9 @@ var REQUEST_EDIT = 'EDIT';
 var DEFAULT_EDITOR_QUESTION = '';
 
 quiz.controller('QuestionControl', function($scope) {
+    $scope.questions = [];
+    $scope.newQuestion = {text:'', choices: []};
+
     $scope.EDIT = REQUEST_EDIT;
 
     $scope.BULLET_STYLES = {
@@ -57,20 +60,7 @@ quiz.controller('QuestionControl', function($scope) {
 
     $scope.CHOICE_PLACEHOLDER = '';
 
-
     $scope.directions = 'This quiz contains 9 questions. Good Luck!';
-
-    $scope.questions = [
-        {text: 'Is the world round?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Is the world square?', choices: ['Yes', 'No', 'Maybe' ]},
-        {text: 'Favorite animal?', choices: ['Cat', 'Dog', 'Elephant' ]}
-    ];
-
 
     $scope.style = {
         ordering: $scope.ORDERINGS.down,
@@ -81,9 +71,7 @@ quiz.controller('QuestionControl', function($scope) {
         }
     };
 
-
     // Some weak sauce currying here, since I want to be able to swap orderings and columns numbers easily
-
     $scope.ordering = {
         index: function(index) {
             return $scope.style.ordering.index($scope.style.columns, index);
@@ -92,7 +80,6 @@ quiz.controller('QuestionControl', function($scope) {
             return $scope.style.ordering.data($scope.style.columns, index);
         }
     };
-
 
     $scope.removeQuestion = function(question) {
         var index = $scope.questions.indexOf(question);
@@ -114,6 +101,8 @@ quiz.controller('QuestionControl', function($scope) {
     };
 
     $scope.clearQuestions = function () {
+        console.log("Questions cleared");
+        $scope.newQuestion.text = '';
         $scope.questions = [];
     };
 
@@ -195,20 +184,23 @@ quiz.controller('QuestionEditorControl', function($scope) {
     };
 
     $scope.addChoice = function ($event) {
-        $scope.question.choices.push($scope.choiceText);
-        $scope.choiceText = '';
-        $scope.$emit($scope.ChoiceAddedEvent);
+        $scope.newQuestion.choices.push($scope.newChoiceText);
+        $scope.newChoiceText = '';
     };
 
     $scope.removeChoice = function (index) {
-        $scope.question.choices.splice(index, 1);
+        $scope.newQuestion.choices.splice(index, 1);
     };
 
     $scope.addQuestion = function () {
-        var message = angular.copy($scope.question);
-        console.log("Question Editor Sending: ",
-                    ADD_QUESTION,
-                    message);
-        $scope.$emit(ADD_QUESTION, message);
+        var newQuestion = {
+            text: $scope.newQuestion.text,
+            choices: $scope.newQuestion.choices
+        };
+        console.log('Adding: ', newQuestion);
+        $scope.questions.push(angular.copy(newQuestion));
+        $scope.newQuestion.text = '';
+        $scope.newQuestion.choices = [];
+        console.log('Questions: ', $scope.questions);
     };
 });

@@ -29,20 +29,15 @@
                         <form ng-submit="" ng-controller="QuestionEditorControl" action="">
                             <fieldset>
                                 <legend>Add a Question</legend>
-                                    <div editable
-                                         ng-init="editor = true"
-                                         editable-when="editor || !questionText"
-                                         ng-model="question.questionText"
-                                         id="questionEditor"
-                                         placeholder="Type a question"
-                                         ng-click="editor = true"
-                                         onfocus="$('> input').select();"
-                                         onkeypress="if (window.event.keyCode === 13){
-                                             $(this).find('input').nextInput();
-                                         }">
-                                    </div>
+                                    <input type="text"
+                                           ng-model="newQuestion.text"
+                                           id="questionEditor"
+                                           onkeypress="if (window.event.keyCode === 13){
+                                               $(this).find('input').nextInput();
+                                           }">
+                                    </input>
                                 <ol>
-                                    <li ng-repeat="choice in question.choices">
+                                    <li ng-repeat="choice in newQuestion.choices">
                                         {{choice}}
                                         <i class="icon-remove" ng-click="removeChoice($index);"></i>
                                     </li>
@@ -51,7 +46,7 @@
                                             id="addAChoiceField"
                                             type="text"
                                             focus-on="ChoiceAddedEvent"
-                                            ng-model="choiceText"
+                                            ng-model="newChoiceText"
                                             placeholder="{{ (choices.length == 0) && 'Add a choice' || 'Add another choice'}}"
                                             onkeypress="if (window.event.keyCode === 13){
                                                 angular.element(this).scope().$apply('addChoice()');
@@ -59,7 +54,7 @@
                                         </input>
                                     </li>
                                 </ol>
-                                <button type="button" class="btn btn-block btn-primary" ng-click="addQuestion(); editor=true">Add this question</button>
+                                <button type="button" class="btn btn-block btn-primary" ng-click="addQuestion();">Add this question</button>
                             </fieldset>
                         </form>
                     </div>
@@ -142,7 +137,7 @@
                     <!-- Quiz content-->
                     <div id="quiz" class="well" style="font-family: {{style.font.style}};">
                         <div id="name">Name: </div>
-                        <div id="directions" ng-model="directions" editable></div>
+                        <input type="text" id="directions" ng-model="directions"></input>
                         <ul class="questions" ng-model="questions"
                             sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index"
                             fixed-heights>
@@ -153,7 +148,7 @@
                                 <div ng-mouseenter="showQuestionEditor=true;"
                                     ng-mouseleave="showQuestionEditor=false;">
                                     <span>{{ordering.index($index) + 1}}.</span>
-                                    <span editable ng-model="question.text"></span>
+                                    <editable model="question.text" />
                                     <span ng-show="showQuestionEditor">
                                         <i class="icon-remove" ng-click="removeQuestion(question);"></i>
                                         <i class="icon-plus" ng-click="addChoice(question, 0); editorFocus[0] = true;"></i>
@@ -170,11 +165,7 @@
                                         <span class="choice-bullet"
                                             ng-bind-html-unsafe="BULLET_STYLES[style.choices.bullet]($index)">
                                         </span>
-                                        <span editable
-                                              editable-on="editorFocus[$index]"
-                                              editable-done="editorFocus[$index] = false"
-                                              ng-model="question.choices[$index]">
-                                        </span>
+                                        <input type="text" ng-model="question.choices[$index]"></input>
                                         <span ng-show="showChoiceEditor">
                                             <i class="icon-remove" ng-click="removeChoice(question, $index);"></i>
                                             <i class="icon-plus" ng-click="addChoice(question, $index + 1);
