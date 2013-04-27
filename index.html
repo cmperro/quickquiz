@@ -137,14 +137,11 @@
                     <!-- Quiz content-->
                     <div id="quiz" class="well" style="font-family: {{style.font.style}};">
                         <div id="name">Name: </div>
-                        <input type="text" id="directions" ng-model="directions"></input>
+                        <input type="text" ng-model="directions"></input>
                         <ul class="questions" ng-model="questions"
                             sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index"
                             fixed-heights>
-                            <li ng-repeat="question in questions | reorder:ordering.data"
-                                class = "question"
-                                ng-init="editorFocus = [];"
-                                ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
+                            <li ng-repeat="question in questions | reorder:ordering.data" class = "question" ng-init="editorFocus = [];" ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
                                 <div ng-mouseenter="showQuestionEditor=true;"
                                     ng-mouseleave="showQuestionEditor=false;">
                                     <span>{{ordering.index($index) + 1}}.</span>
@@ -165,7 +162,7 @@
                                         <span class="choice-bullet"
                                             ng-bind-html-unsafe="BULLET_STYLES[style.choices.bullet]($index)">
                                         </span>
-                                        <input type="text" ng-model="question.choices[$index]"></input>
+                                        <editable model="question.choices[$index]" />
                                         <span ng-show="showChoiceEditor">
                                             <i class="icon-remove" ng-click="removeChoice(question, $index);"></i>
                                             <i class="icon-plus" ng-click="addChoice(question, $index + 1);
