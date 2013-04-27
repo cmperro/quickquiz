@@ -33,7 +33,7 @@
                                            ng-model="newQuestion.text"
                                            id="questionEditor"
                                            onkeypress="if (window.event.keyCode === 13){
-                                               $(this).find('input').nextInput();
+                                               $('#addAChoiceField').focus();
                                            }">
                                     </input>
                                 <ol>

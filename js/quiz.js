@@ -41,7 +41,3 @@ $(function() {
         });
     });
 });
-
-jQuery.fn.nextInput = function() {
-    $(':input:eq(' + $(':input').index(this) + 1 + ')').focus();
-};
