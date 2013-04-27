@@ -28,8 +28,6 @@ Array.prototype.remove = function() {
     return this;
 };
 
-
-
 /**
  * Onload focus on the question editor.
  */
