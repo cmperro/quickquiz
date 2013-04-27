@@ -37,7 +37,6 @@ quiz.directive('editable', function($timeout) {
        template: '<span ng-hide="editMode" ng-click="editMode=true;">{{model}}</span>' +
                  '<input type="text" ng-model="model" ng-show="editMode" ng-enter="editMode=false" ng-lost-focus="editMode=false" />',
        link: function(scope, elm) {
-           console.log('linked');
            scope.editMode = false;
            scope.$watch('editMode', function(value) {
                $timeout(function() {

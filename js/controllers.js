@@ -101,13 +101,11 @@ quiz.controller('QuestionControl', function($scope) {
     };
 
     $scope.clearQuestions = function () {
-        console.log("Questions cleared");
         $scope.newQuestion.text = '';
         $scope.questions = [];
     };
 
     $scope.$on(ADD_QUESTION, function (event, newQuestion) {
-        console.log("Received:", newQuestion);
         $scope.questions.push(newQuestion);
     });
 
@@ -153,7 +151,6 @@ quiz.controller('QuestionControl', function($scope) {
             } else {
                 $scope[variable] = locallyStored;
             }
-            console.log("LOADED", variable, $scope[variable]);
         }
         $scope.$watch(variable, function(newValue) {
             localStorage[key] = JSON.stringify(newValue);
@@ -162,7 +159,6 @@ quiz.controller('QuestionControl', function($scope) {
 
     ['test', 'ordering', 'style.choices.bullet', 'style.columns'].forEach(function(variable) {
         $scope.$watch(variable, function(newValue) {
-            console.log("CHANGED: ", variable, "=", newValue);
         }, true);
     });
 });
@@ -197,10 +193,8 @@ quiz.controller('QuestionEditorControl', function($scope) {
             text: $scope.newQuestion.text,
             choices: $scope.newQuestion.choices
         };
-        console.log('Adding: ', newQuestion);
         $scope.questions.push(angular.copy(newQuestion));
         $scope.newQuestion.text = '';
         $scope.newQuestion.choices = [];
-        console.log('Questions: ', $scope.questions);
     };
 });
