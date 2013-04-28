@@ -1,5 +1,15 @@
+/** get rid of the extra bootstrap paddings **/
 .span3.hide-on-print {
     display: none;
+}
+
+.container-fluid {
+    padding: 0px;
+}
+
+.row-fluid [class*="span"] {
+    margin: 0px;
+    padding: 0px;
 }
 
 #title {
