@@ -28,15 +28,24 @@ quiz.directive('ngLostFocus', function() {
     };
 });
 
+quiz.directive('editable2', function() {
+    return {
+       restrict: "E",
+       template: '<div>sup</div>',
+    };
+});
+
 quiz.directive('editable', function($timeout) {
     return {
        restrict: "E",
        scope: {
            model: '=model',
        },
+       // Link function adds the editable class because I don't know how to just apply a class
        template: '<span ng-hide="editMode" ng-click="editMode=true;">{{model}}</span>' +
                  '<input type="text" ng-model="model" ng-show="editMode" ng-enter="editMode=false" ng-lost-focus="editMode=false" />',
        link: function(scope, elm) {
+           elm.addClass('editable');
            scope.editMode = false;
            scope.$watch('editMode', function(value) {
                $timeout(function() {

@@ -137,15 +137,13 @@
                     <!-- Quiz content-->
                     <div id="quiz" class="well" style="font-family: {{style.font.style}};">
                         <div id="name">Name: </div>
-                        <input type="text" ng-model="directions"></input>
-                        <ul class="questions" ng-model="questions"
-                            sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index"
-                            fixed-heights>
-                            <li ng-repeat="question in questions | reorder:ordering.data" class = "question" ng-init="editorFocus = [];" ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
+                        <editable model="directions"></editable>
+                        <ul class="questions" ng-model="questions" sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index" fixed-heights>
+                            <li ng-repeat="question in questions | reorder:ordering.data" class="question" ng-init="editorFocus = [];" ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
                                 <div ng-mouseenter="showQuestionEditor=true;"
                                     ng-mouseleave="showQuestionEditor=false;">
                                     <span>{{ordering.index($index) + 1}}.</span>
-                                    <editable model="question.text" />
+                                    <editable model="question.text"></editable>
                                     <span ng-show="showQuestionEditor">
                                         <i class="icon-remove" ng-click="removeQuestion(question);"></i>
                                         <i class="icon-plus" ng-click="addChoice(question, 0); editorFocus[0] = true;"></i>
@@ -162,7 +160,7 @@
                                         <span class="choice-bullet"
                                             ng-bind-html-unsafe="BULLET_STYLES[style.choices.bullet]($index)">
                                         </span>
-                                        <editable model="question.choices[$index]" />
+                                        <editable model="question.choices[$index]"></editable>
                                         <span ng-show="showChoiceEditor">
                                             <i class="icon-remove" ng-click="removeChoice(question, $index);"></i>
                                             <i class="icon-plus" ng-click="addChoice(question, $index + 1);
