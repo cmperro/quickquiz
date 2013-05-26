@@ -65,8 +65,7 @@
                                 <span class="help-block">Clears away all of the questions in this quiz.<em>This action cannot be undone.</em></span>
                                 <div id="clearQuestionsModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModelLabel" aria-hidden="true">
                                     <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal"
-                                            aria-hidden="true">x</button>
+                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
                                         <h3>Really delete all questions?</h3>
                                     </div>
                                     <div class="modal-body">
@@ -88,8 +87,7 @@
                         <form action="">
                             <fieldset>
                                 <legend>Shuffle</legend>
-                                <span class="help-block">Randomly shuffle the order of the answers to your
-                                    questions.</span>
+                                <span class="help-block">Randomly shuffle the order of the answers to your questions.</span>
                                 <button type="button" ng-click="shuffleChoices()" class="btn btn-block btn-primary">
                                     Shuffle all of the answers
                                 </button>
@@ -139,28 +137,17 @@
                         <div id="name">Name: </div>
                         <editable model="directions"></editable>
                         <ul class="questions" ng-model="questions" sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index" fixed-heights>
-                            <li ng-repeat="question in questions | reorder:ordering.data" class="question" ng-init="editorFocus = [];" ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
-                                <div ng-mouseenter="showQuestionEditor=true;"
-                                    ng-mouseleave="showQuestionEditor=false;">
-                                    <span>{{ordering.index($index) + 1}}.</span>
-                                    <editable model="question.text"></editable>
+                            <li class="question" ng-repeat="question in questions | reorder:ordering.data" ng-init="editorFocus = [];" ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
+                                <div ng-mouseenter="showQuestionEditor=true;" ng-mouseleave="showQuestionEditor=false;">
+                                    <editable edit="question.text" display="(ordering.index($index) + 1) + '. ' + question.text"></editable>
                                     <span ng-show="showQuestionEditor">
                                         <i class="icon-remove" ng-click="removeQuestion(question);"></i>
                                         <i class="icon-plus" ng-click="addChoice(question, 0); editorFocus[0] = true;"></i>
                                     </span>
                                 </div>
-                                <div class="choices"
-                                    ng-model="question.choices"
-                                    sortable placeholder="CHOICE_PLACEHOLDER">
-                                    <div ng-repeat="choice in question.choices"
-                                         ng-init="showChoiceEditor=false;"
-                                         ng-mouseenter="showChoiceEditor=true;"
-                                         ng-mouseleave="showChoiceEditor=false;"
-                                         class="choice">
-                                        <span class="choice-bullet"
-                                            ng-bind-html-unsafe="BULLET_STYLES[style.choices.bullet]($index)">
-                                        </span>
-                                        <editable model="question.choices[$index]"></editable>
+                                <div class="choices" ng-model="question.choices" sortable placeholder="CHOICE_PLACEHOLDER">
+                                    <div ng-repeat="choice in question.choices" ng-init="showChoiceEditor=false;" ng-mouseenter="showChoiceEditor=true;" ng-mouseleave="showChoiceEditor=false;" class="choice">
+                                        <editable edit="question.choices[$index]" display="BULLET_STYLES[style.choices.bullet]($index) + question.choices[$index]"></editable>
                                         <span ng-show="showChoiceEditor">
                                             <i class="icon-remove" ng-click="removeChoice(question, $index);"></i>
                                             <i class="icon-plus" ng-click="addChoice(question, $index + 1);

@@ -52,7 +52,7 @@ body {
     float: left;
 
     /* Modify width for columns, if it's too big then dnd breaks */
-    width: 45%;
+    width: 50%;
 }
 
 .column {
@@ -90,6 +90,7 @@ body {
 
 .editable > * {
     min-width: 200px;
+    width: 100%;
     display: inline-block;
 }
 
