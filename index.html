@@ -147,7 +147,7 @@
                                 </div>
                                 <div class="choices" ng-model="question.choices" sortable placeholder="CHOICE_PLACEHOLDER">
                                     <div ng-repeat="choice in question.choices" ng-init="showChoiceEditor=false;" ng-mouseenter="showChoiceEditor=true;" ng-mouseleave="showChoiceEditor=false;" class="choice">
-                                        <editable edit="question.choices[$index]" display="BULLET_STYLES[style.choices.bullet]($index) + question.choices[$index]"></editable>
+                                        <editable edit="question.choices[$index]" display="BULLET_STYLES[style.choices.bullet]($index) + ' ' + question.choices[$index]"></editable>
                                         <span ng-show="showChoiceEditor">
                                             <i class="icon-remove" ng-click="removeChoice(question, $index);"></i>
                                             <i class="icon-plus" ng-click="addChoice(question, $index + 1);
