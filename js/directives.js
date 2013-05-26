@@ -36,7 +36,7 @@ quiz.directive('editable', function($timeout) {
            display: '=display',
        },
        template: '<span ng-hide="editMode" ng-click="editMode=true;">{{display}}</span>' +
-                 '<input type="text" ng-model="edit" ng-show="editMode" ng-enter="editMode=false" ng-lost-focus="editMode=false" />',
+                 '<input type="text" ng-model="edit" ng-show="editMode" ng-enter="editMode=false" ng-lost-focus="editMode=false"></input>',
        // Link function adds the editable class because I don't know how to just apply a class
        link: function(scope, elm) {
            elm.addClass('editable');
