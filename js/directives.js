@@ -1,3 +1,11 @@
+quiz.directive('focusOnStart', function() {
+    return  {
+        link: function(scope, element, attrs) {
+            element[0].focus();
+        }
+    };
+});
+
 quiz.directive('focusOn', function() {
     return {
         restrict: 'A',

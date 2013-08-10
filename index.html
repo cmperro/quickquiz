@@ -7,10 +7,11 @@
         <script src="js/jquery-1.8.2.js" type="text/javascript" charset="utf-8"></script>
         <script src="js/jquery-ui-1.9.1.custom.js" type="text/javascript" charset="utf-8"></script>
         <script src="js/bootstrap.min.js" type="text/javascript" charset="utf-8"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/angular.js" type="text/javascript" charset="utf-8"></script>
 
         <!-- Quickly Quiz Scripts -->
         <script src="js/quiz.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/service.js" type="text/javascript" charset="utf-8"></script>
         <script src="js/controllers.js" type="text/javascript" charset="utf-8"></script>
         <script src="js/directives.js" type="text/javascript" charset="utf-8"></script>
 
@@ -31,6 +32,7 @@
                                 <legend>Add a Question</legend>
                                     <input type="text"
                                            ng-model="newQuestion.text"
+                                           focus-on-start
                                            id="questionEditor"
                                            onkeypress="if (window.event.keyCode === 13){
                                                $('#addAChoiceField').focus();

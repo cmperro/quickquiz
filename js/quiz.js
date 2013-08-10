@@ -1,5 +1,9 @@
 var quiz = angular.module('quiz', []);
 
+/**
+ * Some javascript array augmentation that we use in our app.
+ */
+
 // Procured from: http://stackoverflow.com/questions/2450954/how-to-randomize-a-javascript-array
 Array.prototype.shuffle = function () {
   var i = this.length, j, tempi, tempj;
@@ -27,15 +31,3 @@ Array.prototype.remove = function() {
     }
     return this;
 };
-
-/**
- * Onload focus on the question editor.
- */
-$(function() {
-    $('#questionEditor').focus();
-    $('#questionEditor > input').blur(function() {
-        angular.element(this.parentNode).scope().$apply(function(scope) {
-            scope.editor = false;
-        });
-    });
-});
