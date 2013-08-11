@@ -112,7 +112,7 @@
                     <div id="quiz" class="well" style="font-family: {{quiz.font()}};">
                         <div id="name">Name: </div>
                         <div contentEditable="true" ng-model='quiz.data().directions'>{{quiz.data().directions}}</div>
-                        <ul class="questions">
+                        <ul class="questions" fixed-heights='quiz.questions()'>
                             <li class="question" ng-repeat="question in quiz.questions() | reorder: quiz.ordering.data">
                                 <div>
                                     {{quiz.question_bullet(quiz.ordering.index($index))}}
