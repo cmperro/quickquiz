@@ -113,19 +113,35 @@
                         <div id="name">Name: </div>
                         <div contentEditable="true" ng-model='quiz.data().directions'>{{quiz.data().directions}}</div>
                         <ul class="questions" fixed-heights='quiz.questions()'>
-                            <li class="question" ng-repeat="question in quiz.questions() | reorder: quiz.ordering.data">
+                            <li
+                              class="question"
+                              ng-repeat="question in quiz.questions() | reorder: quiz.ordering.data"
+                              ng-mouseenter="showQuestionDelete=true"
+                              ng-mouseleave="showQuestionDelete=false">
                                 <div>
                                     {{quiz.question_bullet(quiz.ordering.index($index))}}
                                     <span contentEditable="true" ng-model='question.text'>{{question.text}}</span>
+                                    <i
+                                      ng-show="showQuestionDelete"
+                                      class="icon-remove"
+                                      ng-click="quiz.removeQuestion(question)"></i>
                                 </div>
                                 <div class="choices">
-                                    <div class="choice" ng-repeat="choice in question.choices">
-                                        <span>
+                                    <div
+                                      class="choice"
+                                      ng-repeat="choice in question.choices"
+                                      ng-mouseenter="showChoiceDelete=true"
+                                      ng-mouseleave="showChoiceDelete=false">
+                                        <span >
                                             {{quiz.choice_bullet($index)}}
                                             <span contentEditable="true" ng-model="question.choices[$index]">
                                                 {{choice}}
                                             </span>
                                         </span>
+                                        <i
+                                          ng-show="showChoiceDelete"
+                                          class="icon-remove"
+                                          ng-click="quiz.removeChoice(question, $index)"></i>
                                     </div>
                                 </div>
                             </li>
