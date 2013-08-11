@@ -116,32 +116,48 @@
                             <li
                               class="question"
                               ng-repeat="question in quiz.questions() | reorder: quiz.ordering.data"
-                              ng-mouseenter="showQuestionDelete=true"
-                              ng-mouseleave="showQuestionDelete=false">
+                              ng-mouseenter="showQuestionEditor=true"
+                              ng-mouseleave="showQuestionEditor=false">
                                 <div>
                                     {{quiz.question_bullet(quiz.ordering.index($index))}}
                                     <span contentEditable="true" ng-model='question.text'>{{question.text}}</span>
-                                    <i
-                                      ng-show="showQuestionDelete"
-                                      class="icon-remove"
-                                      ng-click="quiz.removeQuestion(question)"></i>
+                                    <span ng-show="showQuestionEditor">
+                                        <i class="icon-remove" ng-click="quiz.removeQuestion(question)"></i>
+                                        <i class="icon-random" ng-click="question.choices.shuffle()"></i>
+                                        <i
+                                          ng-hide="$first"
+                                          class="icon-arrow-up"
+                                          ng-click="quiz.questions().swap($index, $index - 1)"></i>
+                                        <i
+                                          ng-hide="$last"
+                                          class="icon-arrow-down"
+                                          ng-click="quiz.questions().swap($index, $index + 1)"></i>
+                                    </span>
                                 </div>
                                 <div class="choices">
                                     <div
                                       class="choice"
                                       ng-repeat="choice in question.choices"
-                                      ng-mouseenter="showChoiceDelete=true"
-                                      ng-mouseleave="showChoiceDelete=false">
+                                      ng-mouseenter="showChoiceEditor=true"
+                                      ng-mouseleave="showChoiceEditor=false">
                                         <span >
                                             {{quiz.choice_bullet($index)}}
                                             <span contentEditable="true" ng-model="question.choices[$index]">
                                                 {{choice}}
                                             </span>
                                         </span>
-                                        <i
-                                          ng-show="showChoiceDelete"
-                                          class="icon-remove"
-                                          ng-click="quiz.removeChoice(question, $index)"></i>
+                                        <span ng-show="showChoiceEditor">
+                                            <i class="icon-remove" ng-click="quiz.removeChoice(question, $index)"></i>
+                                            <i
+                                              ng-hide="$first"
+                                              class="icon-arrow-up"
+                                              ng-click="question.choices.swap($index, $index - 1)"></i>
+                                            <i
+                                              ng-hide="$last"
+                                              class="icon-arrow-down"
+                                              ng-click="question.choices.swap($index, $index + 1)"></i>
+                                            <i class="icon-plus" ng-click="question.choices.splice($index + 1, 0, '')"></i>
+                                        </span>
                                     </div>
                                 </div>
                             </li>
