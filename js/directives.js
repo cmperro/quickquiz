@@ -40,7 +40,6 @@ quiz.directive('fixedHeights', function($timeout) {
     return {
         restrict: 'A',
         link: function(scope, element, attrs) {
-            console.log(attrs.fixedHeights);
             scope.$watch(attrs.fixedHeights, function() {
                 $timeout(function() {
                     element.children().each(function(childIndex) {
