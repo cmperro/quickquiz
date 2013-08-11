@@ -48,36 +48,11 @@ quiz.directive('contenteditable', function() {
       });
 
       // model -> view
-      ctrl.$render = function() {
-        elm.html(ctrl.$viewValue);
+      ctrl.$render = function(value) {
+        elm.html(value);
       };
-
-      // load init value from DOM
-      ctrl.$setViewValue('cat');
     }
   };
-});
-
-quiz.directive('editable', function($timeout) {
-    return {
-       restrict: "E",
-       scope: {
-           edit: '=edit',
-           display: '=display',
-       },
-       template: '<span ng-hide="editMode" ng-click="editMode=true;">{{display}}</span>' +
-                 '<input type="text" ng-model="edit" ng-show="editMode" ng-enter="editMode=false" ng-lost-focus="editMode=false"></input>',
-       // Link function adds the editable class because I don't know how to just apply a class
-       link: function(scope, elm) {
-           elm.addClass('editable');
-           scope.editMode = false;
-           scope.$watch('editMode', function(value) {
-               $timeout(function() {
-                 elm.children('input').focus();
-               });
-           });
-       }
-    };
 });
 
 quiz.directive('sortable', function($timeout) {

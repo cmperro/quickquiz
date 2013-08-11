@@ -3,40 +3,55 @@
  */
 quiz.factory('Defaults', function() {
     return {
+        quiz: {
+            questions: [],
+            directions: 'This quiz contains 9 questions. Good Luck!',
+            style: {
+                questions: {
+                    ordering: 'down', // A key in Defaults.orderings
+                    bullet_style: 'number', // A key in Defaults.bullet_styles
+                },
+                columns: 2,
+                font: 'Times New Roman', // A value in Defaults.fonts
+                choices: {
+                    bullet_style: 'circle', // A key in Defaults.bullet_styles
+                }
+            },
+        },
         newQuestion: {
             text: '',
             choices: []
         },
         bullet_styles: {
             // http://en.wikipedia.org/wiki/Unicode_Geometric_Shapes
-            circle: function() { return '\u25EF'; },
             none: function() {return '&nbsp;';},
+            circle: function() { return '\u25EF'; },
             number: function(index) { return (index+1) + '.'; },
             letter: function(index) { return String.fromCharCode('A'.charCodeAt() + index) + '.'; },
             square: function() { return '\u25A1'; },
         },
-        fonts: [
-            {name: "Times New Roman", style: '"Times New Roman", Georgia, Serif'},
-            {name: "Arial", style: 'arial, sans-serif'},
-            {name: "Georgia", style: 'Georgia, Serif'},
-        ],
+        fonts: {
+            "Times New Roman": '"Times New Roman", Georgia, Serif',
+            "Arial": 'arial, sans-serif',
+            "Georgia": 'Georgia, Serif',
+        },
         orderings: {
             across: {
-                data: function(columns, index) {
+                data: function(number_of_questions, columns, index) {
                     return index;
                 },
-                index: function(columns, index) {
+                index: function(number_of_questions, columns, index) {
                     return index;
                 }
             },
             down: {
-                data: function(columns, index) {
-                    var rows = Math.ceil($scope.questions.length / columns);
+                data: function(number_of_questions, columns, index) {
+                    var rows = Math.ceil(number_of_questions / columns);
                     var newIndex = ((index % rows) * columns) + Math.floor(index / rows);
                     return newIndex;
                 },
-                index: function(columns, index) {
-                    var rows = Math.ceil($scope.questions.length / columns);
+                index: function(number_of_questions, columns, index) {
+                    var rows = Math.ceil(number_of_questions / columns);
                     var offset = index % columns;
                     var newIndex = (rows*offset) + ((index-offset)/columns);
                     return newIndex;
@@ -50,119 +65,161 @@ quiz.factory('Defaults', function() {
     };
 });
 
-quiz.factory('Quiz', function(Defaults) {
-    var data = {
-        questions: [],
-        directions: 'This quiz contains 9 questions. Good Luck!',
-        style: {
-            ordering: Defaults.orderings.down,
-            columns: 2,
-            font: Defaults.fonts[0],
-            choices: {
-                bullet: Defaults.bullet_styles.circle
-            }
-        },
-    };
+quiz.factory('Persistence', function() {
+    var PREFIX = 'QuicklyQuiz';
 
-    return {
-        ordering: {
-            // Some weak sauce currying here, since I want to be able to swap orderings and columns numbers easily
-            index: function(index) {
-                return data.style.ordering.index($scope.style.columns, index);
-            },
-            data: function(index) {
-                return data.style.ordering.data($scope.style.columns, index);
-            }
-        },
-
-        questions: function() {
-            return data.questions;
-        },
-
-        addQuestion: function(newQuestion) {
-            data.questions.push(newQuestion);
-        },
-
-        removeQuestion: function(question) {
-            var index = data.questions.indexOf(question);
-            data.questions.splice(index, 1);
-        },
-
-        clearQuestions: function () {
-            data.questions = [];
-        },
-
-        addChoice: function(question, index, choice) {
-            if (!choice) {
-                choice = '';
-            }
-            question.choices.splice(index, 0, choice);
-        },
-
-        removeChoice: function(question, index) {
-            question.choices.splice(index, 1);
-        },
-
-        shuffleChoices: function() {
-            angular.forEach(data.questions, function(question) {
-                question.choices.shuffle();
-            });
-        },
-    };
-});
-
-/** TODO: enable Persistence stuff
     function stringType(obj) {
+        // The type of the object as a string.
         return Object.prototype.toString.call(obj);
     }
 
+    function storageKey(key) {
+        // A prefix applied to everything we store in localStorage.
+        return PREFIX + '.' + key;
+    }
+
+    // A utility function be used to overlay loaded data onto an already
+    // existing object. Returns the bottom object with its keys modified.
     function overlay(bottom, top) {
-        $.each(top, function(key, topValue) {
-            var type = stringType(topValue);
+        var newObject = angular.copy(bottom);
+        Object.keys(top).forEach(function(key) {
+            var topValue = top[key];
+            var topType = stringType(topValue);
 
-            if (bottom[key]) {
-                var bottomValue = bottom[key];
+            if (!bottom[key]) {
+                newObject[key] = topValue;
+                return;
+            }
 
-                // Only used for error checking, should really be equal to type
-                var bottomType = stringType(bottomValue);
-                if (type !== bottomType) {
-                    throw {error: 'Type mismatch in loading [' + key + ']. Bottom: ' + bottomType + ' Top: ' + topType};
-                }
+            var bottomValue = bottom[key];
+            var bottomType = stringType(bottomValue);
 
-                if (type === '[object Object]') {
-                    // Associative array, recurse
-                    overlay(bottomValue, topValue);
-                } else {
-                    // Assume that if it's anything else, we can just copy over
-                    bottom[key] = topValue;
-                }
+            if (topType !== bottomType) {
+                throw {error: 'Type mismatch in loading [' + key + ']. Bottom: ' + bottomType + ' Top: ' + topType};
+            }
+
+            // topType and bottomType are equal at this point
+            if (topType === '[object Object]') {
+                // Associative array, recurse
+                newObject[key] = overlay(bottomValue, topValue);
             } else {
-                bottom[key] = topValue;
+                // Assume that if it's anything else, we can just copy over
+                newObject[key] = topValue;
             }
         });
-        return bottom;
+        return newObject;
     }
 
-    // Handle persistence across refresh, by saving models to local storage as JSON.
-    ['questions', 'style', 'directions'].forEach(function(variable) {
-        var key = 'QuicklyQuiz.' + variable;
-        if (localStorage[key]) {
-            var locallyStored = JSON.parse(localStorage[key]);
-            if (stringType(locallyStored) === '[object Object]') {
-                overlay($scope[variable], locallyStored);
+    return {
+        load: function(key, value_if_empty) {
+            var found = localStorage[storageKey(key)];
+            if (found) {
+                return JSON.parse(found);
             } else {
-                $scope[variable] = locallyStored;
+                return value_if_empty;
             }
-        }
-        $scope.$watch(variable, function(newValue) {
-            localStorage[key] = JSON.stringify(newValue);
-        }, true);
-    });
+        },
 
-    ['test', 'ordering', 'style.choices.bullet', 'style.columns'].forEach(function(variable) {
-        $scope.$watch(variable, function(newValue) {
-        }, true);
-    });
-    }
+        save: function(key, payload) {
+            localStorage[storageKey(key)] = JSON.stringify(payload);
+        },
+
+        overlay: overlay
+    };
 });
-**/
+
+quiz.factory('Quiz', function(Defaults) {
+    var quiz = {};
+
+    // This data object is what gets persisted for a quiz.
+    // Therefore, only include serializable data in here.
+    // Any state for the quiz that wants to be persisted, goes in here.
+    quiz.data = function(newData) {
+        if (newData) {
+            this._data = newData;
+        }
+        return this._data
+    };
+
+    quiz.data(Defaults.quiz);
+
+    quiz.ordering = {
+        // Utility functions for numbering and labeling the quiz questions.
+        index: function(index) {
+            var ordering_name = quiz.data().style.questions.ordering;
+            return Defaults.orderings[ordering_name].index(quiz.data().questions.length, quiz.data().style.columns, index);
+        },
+        data: function(index) {
+            var ordering_name = quiz.data().style.questions.ordering;
+            return Defaults.orderings[ordering_name].data(quiz.data().questions.length, quiz.data().style.columns, index);
+        }
+    };
+
+    quiz.directions = function(newDirections) {
+        if (newDirections) {
+            this.data().directions = newDirections;
+        }
+        return this.data().directions;
+    };
+
+    /**
+     * The font to use for this quiz.
+     */
+    quiz.font = function() {
+        return Defaults.fonts[this.data().style.font];
+    },
+
+    /**
+     *  The question bullet for the question at the given index.
+     */
+    quiz.question_bullet = function(index) {
+        return Defaults.bullet_styles[this.data().style.questions.bullet_style](index);
+    };
+
+    /**
+     *  The choice bullet for the choice at the given index.
+     */
+    quiz.choice_bullet = function(index) {
+        return Defaults.bullet_styles[this.data().style.choices.bullet_style](index);
+    };
+
+    quiz.style = function() {
+        return this.data().style;
+    };
+
+    quiz.questions = function() {
+        return this.data().questions;
+    };
+
+    quiz.addQuestion = function(newQuestion) {
+        this.data().questions.push(newQuestion);
+    };
+
+    quiz.removeQuestion = function(question) {
+        var index = this.data().questions.indexOf(question);
+        this.data().questions.splice(index, 1);
+    };
+
+    quiz.clearQuestions = function () {
+        this.data().questions = [];
+    };
+
+    quiz.addChoice = function(question, index, choice) {
+        if (!choice) {
+            choice = '';
+        }
+        question.choices.splice(index, 0, choice);
+    };
+
+    quiz.removeChoice = function(question, index) {
+        question.choices.splice(index, 1);
+    };
+
+    quiz.shuffleChoices = function() {
+        angular.forEach(this.data().questions, function(question) {
+            question.choices.shuffle();
+        });
+    };
+
+    return quiz;
+});

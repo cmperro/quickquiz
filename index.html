@@ -22,7 +22,7 @@
     </head>
     <body>
         <h2 id="title">Quickly Quiz!</h2>
-        <div class="container-fluid" ng-controller="QuestionControl">
+        <div class="container-fluid" ng-controller="QuizControl">
             <div class="row-fluid">
                 <div class="span3 hide-on-print">
                     <!-- editor sidebar-->
@@ -30,58 +30,18 @@
                         <form ng-submit="" ng-controller="QuestionEditorControl" action="">
                             <fieldset>
                                 <legend>Add a Question</legend>
-                                    <input type="text"
-                                           ng-model="newQuestion.text"
-                                           focus-on-start
-                                           id="questionEditor"
-                                           onkeypress="if (window.event.keyCode === 13){
-                                               $('#addAChoiceField').focus();
-                                           }">
-                                    </input>
+                                <input focus-on-start type="text" ng-model="text" ng-enter="moveFocusTo('#addChoice')"  />
                                 <ol>
-                                    <li ng-repeat="choice in newQuestion.choices">
-                                        {{choice}}
-                                        <i class="icon-remove" ng-click="removeChoice($index);"></i>
+                                    <li ng-repeat="choice in choices">
+                                        {{choice}} <i class="icon-remove" ng-click="removeChoice($index);"></i>
                                     </li>
                                     <li style="list-style-type: none;">
-                                        <input
-                                            id="addAChoiceField"
-                                            type="text"
-                                            focus-on="ChoiceAddedEvent"
-                                            ng-model="newChoiceText"
-                                            placeholder="{{ (choices.length == 0) && 'Add a choice' || 'Add another choice'}}"
-                                            onkeypress="if (window.event.keyCode === 13){
-                                                angular.element(this).scope().$apply('addChoice()');
-                                            }">
-                                        </input>
+                                        <input id="addChoice" type="text" ng-model="newChoice" ng-enter="addChoice()" />
                                     </li>
                                 </ol>
-                                <button type="button" class="btn btn-block btn-primary" ng-click="addQuestion();">Add this question</button>
-                            </fieldset>
-                        </form>
-                    </div>
-                    <div class="well">
-                        <form action="">
-                            <fieldset>
-                                <legend>Clear All Questions</legend>
-                                <span class="help-block">Clears away all of the questions in this quiz.<em>This action cannot be undone.</em></span>
-                                <div id="clearQuestionsModel" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModelLabel" aria-hidden="true">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
-                                        <h3>Really delete all questions?</h3>
-                                    </div>
-                                    <div class="modal-body">
-                                        <p>
-                                            Are you sure that you want to delete all of the questions in your quiz? This
-                                            cannot be undone.
-                                        </p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a href="#" class="btn" data-dismiss="modal">No, Do not clear the questions</a>
-                                        <a href="#" ng-click="clearQuestions();" data-dismiss="modal"  class="btn btn-danger">Yes, Clear all of the questions</a>
-                                    </div>
-                                </div>
-                                <a href="#clearQuestionsModel" class="btn btn-block btn-danger" data-toggle="modal">Clear all of the questions</a>
+                                <button type="button" class="btn btn-block btn-primary" ng-click="addQuestion()">
+                                    Add this question
+                                </button>
                             </fieldset>
                         </form>
                     </div>
@@ -89,9 +49,9 @@
                         <form action="">
                             <fieldset>
                                 <legend>Shuffle</legend>
-                                <span class="help-block">Randomly shuffle the order of the answers to your questions.</span>
-                                <button type="button" ng-click="shuffleChoices()" class="btn btn-block btn-primary">
-                                    Shuffle all of the answers
+                                <span class="help-block">Shuffle the order of the choices to your questions</span>
+                                <button type="button" ng-click="quiz.shuffleChoices()" class="btn btn-block btn-primary">
+                                    Shuffle all of the choices
                                 </button>
                             </fieldset>
                         </form>
@@ -100,33 +60,47 @@
                         <form action="">
                             <fieldset>
                                 <legend>Format</legend>
-                                <label>Choices</label>
+                                <label>Bullets for questions.</label>
                                 <div class="btn-group" data-toggle="buttons-radio">
-                                    <button ng-repeat="(name, bulletForIndex) in BULLET_STYLES"
+                                    <button ng-repeat="(style_name, bulleter) in defaults.bullet_styles"
                                         class="btn"
-                                        ng-bind-html-unsafe="bulletForIndex(0)"
-                                        ng-click="style.choices.bullet=name"
-                                        ng-class="(style.choices.bullet == name) && 'active' || ''">
+                                        ng-bind-html-unsafe="bulleter(0)"
+                                        ng-click="quiz.style().questions.bullet_style = style_name"
+                                        ng-class="(quiz.style().questions.bullet_style == style_name) && 'active' || ''">
                                     </button>
                                 </div>
+                                <label>Bullets for choices.</label>
+                                <div class="btn-group" data-toggle="buttons-radio">
+                                    <button ng-repeat="(style_name, bulleter) in defaults.bullet_styles"
+                                        class="btn"
+                                        ng-bind-html-unsafe="bulleter(0)"
+                                        ng-click="quiz.style().choices.bullet_style = style_name"
+                                        ng-class="(quiz.style().choices.bullet_style == style_name) && 'active' || ''">
+                                    </button>
+                                </div>
+                                <label>Quiz Font</label>
                                 <div class="btn-group">
-                                    <button class="btn" style="font-family: {{style.font.style}};">{{style.font.name}}</button>
+                                    <button class="btn" style="font-family: {{quiz.font()}};">
+                                        {{quiz.style().font}}
+                                    </button>
                                     <button class="btn dropdown-toggle" data-toggle="dropdown">
                                         <span class="caret"></span>
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li ng-repeat="font in FONTS">
-                                            <a ng-click="style.font=font" style="font-family: {{font.style}};">{{font.name}}</a>
+                                        <li ng-repeat="(name, family) in defaults.fonts">
+                                            <a ng-click="quiz.style().font=name" style="font-family: {{family}};">
+                                                {{name}}
+                                            </a>
                                         </li>
                                     </ul>
                                 </div>
                                 <label>Question Order</label>
                                 <div class="btn-group" data-toggle="buttons-radio">
-                                    <button ng-repeat="(name, order) in ORDERINGS"
+                                    <button ng-repeat="(name, order) in defaults.orderings"
                                         class="btn"
-                                        ng-bind="name"
-                                        ng-click="style.ordering=order"
-                                        ng-class="(style.ordering == order) && 'active' || ''">
+                                        ng-click="quiz.style().questions.ordering=name"
+                                        ng-class="(quiz.style().questions.ordering == name) && 'active' || ''">
+                                        {{name}}
                                     </button>
                                 </div>
                             </fieldset>
@@ -135,26 +109,22 @@
                 </div>
                 <div class="span9">
                     <!-- Quiz content-->
-                    <div id="quiz" class="well" style="font-family: {{style.font.style}};">
+                    <div id="quiz" class="well" style="font-family: {{quiz.font()}};">
                         <div id="name">Name: </div>
-                        <editable model="directions"></editable>
-                        <ul class="questions" ng-model="questions" sortable placeholder="QUESTION_PLACEHOLDER" index-mapper="ordering.index" fixed-heights>
-                            <li class="question" ng-repeat="question in questions | reorder:ordering.data" ng-init="editorFocus = [];" ng-class="(question == QUESTION_PLACEHOLDER) && 'placeholder' || ''">
-                                <div ng-mouseenter="showQuestionEditor=true;" ng-mouseleave="showQuestionEditor=false;">
-                                    <editable edit="question.text" display="(ordering.index($index) + 1) + '. ' + question.text"></editable>
-                                    <span ng-show="showQuestionEditor">
-                                        <i class="icon-remove" ng-click="removeQuestion(question);"></i>
-                                        <i class="icon-plus" ng-click="addChoice(question, 0); editorFocus[0] = true;"></i>
-                                    </span>
+                        <div contentEditable="true" ng-model='quiz.data().directions'>{{quiz.data().directions}}</div>
+                        <ul class="questions">
+                            <li class="question" ng-repeat="question in quiz.questions() | reorder: quiz.ordering.data">
+                                <div>
+                                    {{quiz.question_bullet(quiz.ordering.index($index))}}
+                                    <span contentEditable="true" ng-model='question.text'>{{question.text}}</span>
                                 </div>
-                                <div class="choices" ng-model="question.choices" sortable placeholder="CHOICE_PLACEHOLDER">
-                                    <div ng-repeat="choice in question.choices" ng-init="showChoiceEditor=false;" ng-mouseenter="showChoiceEditor=true;" ng-mouseleave="showChoiceEditor=false;" class="choice">
-                                        <span>{{BULLET_STYLES[style.choices.bullet]($index)}}</span>
-                                        <span contentEditable="true" ng-model="question.choices[$index]"></span>
-                                        <span ng-show="showChoiceEditor">
-                                            <i class="icon-remove" ng-click="removeChoice(question, $index);"></i>
-                                            <i class="icon-plus" ng-click="addChoice(question, $index + 1);
-                                                editorFocus[$index + 1] = true;"></i>
+                                <div class="choices">
+                                    <div class="choice" ng-repeat="choice in question.choices">
+                                        <span>
+                                            {{quiz.choice_bullet($index)}}
+                                            <span contentEditable="true" ng-model="question.choices[$index]">
+                                                {{choice}}
+                                            </span>
                                         </span>
                                     </div>
                                 </div>
